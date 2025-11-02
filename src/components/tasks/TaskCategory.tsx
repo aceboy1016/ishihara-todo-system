@@ -13,7 +13,7 @@ interface TaskCategoryProps {
   tasks: Task[];
   onTaskToggle: (taskId: number) => void;
   onTaskUpdate: (taskId: number, updates: Partial<Task>) => void;
-  onTaskAdd?: () => void;
+  onTaskAdd?: (category?: Task['category']) => void;
   onTaskMove?: (taskId: number, newCategory: string) => void;
   onTaskEdit?: (task: Task) => void;
   onTaskDelete?: (taskId: number) => void;
@@ -237,7 +237,7 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
             {/* Add Task Button */}
             {onTaskAdd && (
               <button
-                onClick={onTaskAdd}
+                onClick={() => onTaskAdd(category)}
                 className={clsx(
                   'p-2 rounded-lg border transition-colors',
                   'hover:bg-white opacity-10',
@@ -331,6 +331,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                         task={task}
                         onToggle={onTaskToggle}
                         onUpdate={onTaskUpdate}
+                        onEdit={onTaskEdit}
+                        onDelete={onTaskDelete}
                       />
                     ))}
                   </div>
@@ -346,6 +348,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                         task={task}
                         onToggle={onTaskToggle}
                         onUpdate={onTaskUpdate}
+                        onEdit={onTaskEdit}
+                        onDelete={onTaskDelete}
                       />
                     ))}
                   </div>

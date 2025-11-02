@@ -15,6 +15,7 @@ export interface Task {
   isRecurring?: boolean; // 繰り返しタスクかどうか
   recurringType?: 'daily' | 'weekly' | 'monthly' | 'yearly'; // 繰り返しタイプ
   recurringInterval?: number; // 繰り返し間隔（例：2週間おき）
+  rolloverFrom?: string; // 繰り越し元の日付（YYYY-MM-DD形式）
   createdAt: string;
   updatedAt: string;
 }

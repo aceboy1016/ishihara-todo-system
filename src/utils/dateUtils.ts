@@ -2,9 +2,20 @@ import { format, startOfWeek, endOfWeek, addWeeks, differenceInWeeks, parseISO }
 import { ja } from 'date-fns/locale';
 
 export const getCurrentWeekNumber = (): number => {
+  // 日本時間で正確に計算
   const now = new Date();
   const startOfYear = new Date(now.getFullYear(), 0, 1);
-  return Math.ceil(differenceInWeeks(now, startOfYear) + 1);
+
+  // date-fnsを使って週の差分を計算（月曜始まり）
+  const currentWeekStart = startOfWeek(now, { weekStartsOn: 1 });
+  const yearWeekStart = startOfWeek(startOfYear, { weekStartsOn: 1 });
+
+  const weekNumber = Math.floor(differenceInWeeks(currentWeekStart, yearWeekStart)) + 1;
+
+  // デバッグ用のログ（後で削除）
+  console.log(`📅 Current week calculation: ${now.toDateString()} -> Week ${weekNumber}`);
+
+  return weekNumber;
 };
 
 export const getWeekDateRange = (weekNumber: number, year?: number): string => {

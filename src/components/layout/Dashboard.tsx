@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Header } from './Header';
 import { ProgressCard } from '../analytics/ProgressCard';
 import { AnalyticsCard } from '../analytics/AnalyticsCard';
 import { TaskCategory } from '../tasks/TaskCategory';
 import { TaskModal } from '../ui/TaskModal';
+import { TaskRolloverModal } from '../ui/TaskRolloverModal';
+import { TaskSelectModal } from '../ui/TaskSelectModal';
 import { ReflectionForm } from '../reflection/ReflectionForm';
 import { AIInsightPanel } from '../reflection/AIInsightPanel';
 import { LongTermGoalsPanel } from '../goals/LongTermGoalsPanel';
@@ -19,10 +21,17 @@ import type {
   WeekHistoryEntry,
   WeeklyReflectionInput,
 } from '../../types';
-import { getWeekDateRange } from '../../utils/dateUtils';
+import { getWeekDateRange, getWeekDates, getCurrentWeekNumber } from '../../utils/dateUtils';
 import { INITIAL_GOALS, generateInitialTasks } from '../../constants/categories';
 import { exportToJSON, downloadJSON } from '../../utils/exportUtils';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import {
+  getIncompleteTasksForDate,
+  rolloverIncompleteTasks,
+  getYesterday,
+  getToday,
+  formatDateToString
+} from '../../utils/taskRollover';
 import { useWeeklyHistory, useReflectionProfile, createHistoryEntry } from '../../hooks/useWeeklyHistory';
 import { useAIInsights } from '../../hooks/useAIInsights';
 
@@ -32,22 +41,28 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = () => {
   // Temporary state - will be replaced with custom hooks
-  const [currentWeek, setCurrentWeek] = useState(40);
-  const [dateRange, setDateRange] = useState(getWeekDateRange(40));
+  const [currentWeek, setCurrentWeek] = useState(getCurrentWeekNumber());
+  const [dateRange, setDateRange] = useState(getWeekDateRange(getCurrentWeekNumber()));
   const [phase] = useState(1);
   const [currentView, setCurrentView] = useState<'dashboard' | 'analytics' | 'history'>('dashboard');
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
   const [tasks, setTasks] = useState<Task[]>([]);
 
+  // 繰り越しモーダル関連のステート
+  const [showRolloverModal, setShowRolloverModal] = useState(false);
+  const [incompleteTasks, setIncompleteTasks] = useState<Task[]>([]);
+  const [rolloverFromDate, setRolloverFromDate] = useState<Date>(getYesterday());
+  const [rolloverToDate, setRolloverToDate] = useState<Date>(getToday());
+
+  // タスク選択モーダル関連のステート
+  const [showTaskSelectModal, setShowTaskSelectModal] = useState(false);
+  const [selectedDateForTask, setSelectedDateForTask] = useState<Date>(new Date());
+
   // 毎月のタスクの日付を動的に更新する関数
   const updateMonthlyTaskDates = (tasks: Task[]): Task[] => {
-    // 現在の週の日付範囲を取得
-    const [weekStart, weekEnd] = dateRange.split(' - ').map(date => {
-      const [month, day] = date.split('/').map(Number);
-      return new Date(2025, month - 1, day);
-    });
+    // getWeekDatesを使って正確な週の日付範囲を取得
+    const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
 
-    console.log('updateMonthlyTaskDates called with week range:', weekStart, 'to', weekEnd);
 
     return tasks.map(task => {
       // 【毎月X日】パターンのタスクまたはisRecurring=trueでrecurringType=monthlyのタスクを対象
@@ -59,13 +74,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
         if (monthlyMatch) {
           targetDay = parseInt(monthlyMatch[1], 10);
-          console.log(`Found monthly task "${task.title}" with day ${targetDay}`);
         } else if (task.scheduledDate) {
           const dateObj = new Date(task.scheduledDate);
           targetDay = dateObj.getDate();
-          console.log(`Found recurring monthly task "${task.title}" with day ${targetDay}`);
         } else {
-          console.log(`Skipping task "${task.title}" - no valid date`);
           return task;
         }
 
@@ -88,7 +100,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         }
 
         const newDate = `${targetDate.getFullYear()}-${(targetDate.getMonth() + 1).toString().padStart(2, '0')}-${targetDay.toString().padStart(2, '0')}`;
-        console.log(`Updating task "${task.title}" date from ${task.scheduledDate} to ${newDate}`);
 
         return {
           ...task,
@@ -102,6 +113,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   };
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
+  const [defaultCategory, setDefaultCategory] = useState<Task['category'] | undefined>(undefined);
   const { entries, upsertEntry, getEntry } = useWeeklyHistory();
   const { profile } = useReflectionProfile();
   const { generateInsight, isGenerating, error: aiError } = useAIInsights();
@@ -175,7 +187,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             const jsonData = JSON.parse(e.target?.result as string);
             if (jsonData.weekData?.[0]?.tasks) {
               setTasks(jsonData.weekData[0].tasks);
-              console.log('Tasks imported successfully');
             } else {
               console.error('Invalid JSON format');
               alert('無効なJSONファイル形式です');
@@ -214,6 +225,26 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       prevTasks.map(task =>
         task.id === taskId
           ? { ...task, ...updates, updatedAt: new Date().toISOString() }
+          : task
+      )
+    );
+  };
+
+  const handleTaskDateUpdate = (taskId: number, newDate: Date) => {
+    // タイムゾーンの問題を解決するため、ローカル日付を使用
+    const year = newDate.getFullYear();
+    const month = String(newDate.getMonth() + 1).padStart(2, '0');
+    const day = String(newDate.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === taskId
+          ? {
+              ...task,
+              scheduledDate: dateString,
+              updatedAt: new Date().toISOString()
+            }
           : task
       )
     );
@@ -274,6 +305,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const handleCloseModal = () => {
     setIsTaskModalOpen(false);
     setEditingTask(undefined);
+    setDefaultCategory(undefined);
   };
 
   const handleTaskMove = (taskId: number, newCategory: string) => {
@@ -289,10 +321,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   // Load tasks for current week on mount and week change
   React.useEffect(() => {
     const weekKey = `strategic-todo-tasks-week${currentWeek}`;
-    let savedTasks = localStorage.getItem(weekKey);
 
-    // Force refresh for testing - remove after debugging
-    console.log('Loading tasks for week', currentWeek);
+
+    let savedTasks = localStorage.getItem(weekKey);
 
     // Migration: If week 39 data doesn't exist but v2 data exists, migrate it
     if (!savedTasks && currentWeek === 39) {
@@ -306,22 +337,18 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     if (savedTasks) {
       try {
         const parsedTasks = JSON.parse(savedTasks);
-        console.log('Loaded tasks from localStorage:', parsedTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
         // 月次タスクの日付を動的に更新
         const updatedTasks = updateMonthlyTaskDates(parsedTasks);
-        console.log('Updated monthly task dates:', updatedTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
         setTasks(updatedTasks);
       } catch (error) {
         console.error('Failed to load tasks for week', currentWeek, error);
         const initialTasks = generateInitialTasks();
         const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
-        console.log('Using initial tasks with updated dates:', updatedInitialTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
         setTasks(updatedInitialTasks);
       }
     } else {
       const initialTasks = generateInitialTasks();
       const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
-      console.log('No saved tasks, using initial tasks with updated dates:', updatedInitialTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
       setTasks(updatedInitialTasks);
     }
   }, [currentWeek]);
@@ -331,6 +358,81 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     const weekKey = `strategic-todo-tasks-week${currentWeek}`;
     localStorage.setItem(weekKey, JSON.stringify(tasks));
   }, [tasks, currentWeek]);
+
+  // 繰り越しチェック用のuseEffect
+  useEffect(() => {
+    // 初回ロード時のみ、昨日の未完了タスクをチェック
+    const checkForRollover = () => {
+      const yesterday = getYesterday();
+      const today = getToday();
+      const lastRolloverCheck = localStorage.getItem('last-rollover-check');
+      const todayString = formatDateToString(today);
+
+      // 今日既にチェック済みの場合はスキップ
+      if (lastRolloverCheck === todayString) {
+        return;
+      }
+
+      const incompleteYesterday = getIncompleteTasksForDate(tasks, yesterday);
+
+      if (incompleteYesterday.length > 0) {
+        setIncompleteTasks(incompleteYesterday);
+        setRolloverFromDate(yesterday);
+        setRolloverToDate(today);
+        setShowRolloverModal(true);
+      }
+
+      // チェック済みマークを保存
+      localStorage.setItem('last-rollover-check', todayString);
+    };
+
+    if (tasks.length > 0) {
+      checkForRollover();
+    }
+  }, [tasks]);
+
+  // 繰り越し処理の実行
+  const handleConfirmRollover = () => {
+    const { updatedTasks } = rolloverIncompleteTasks(tasks, rolloverFromDate, rolloverToDate);
+    setTasks(updatedTasks);
+    setShowRolloverModal(false);
+    setIncompleteTasks([]);
+  };
+
+  // 繰り越しをスキップ
+  const handleSkipRollover = () => {
+    setShowRolloverModal(false);
+    setIncompleteTasks([]);
+  };
+
+  // 日付にタスクを追加（既存タスクを選択）
+  const handleAddTaskToDate = (date: Date) => {
+    setSelectedDateForTask(date);
+    setShowTaskSelectModal(true);
+  };
+
+  // 選択されたタスクに日付を設定
+  const handleTaskSelect = (task: Task, selectedDate: Date) => {
+    // タイムゾーンの問題を解決するため、ローカル日付を使用
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(selectedDate.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
+    setTasks(prevTasks =>
+      prevTasks.map(t =>
+        t.id === task.id
+          ? {
+              ...t,
+              scheduledDate: dateString,
+              updatedAt: new Date().toISOString()
+            }
+          : t
+      )
+    );
+
+    setShowTaskSelectModal(false);
+  };
 
   const handleWeekChange = (weekNumber: number) => {
     setCurrentWeek(weekNumber);
@@ -527,6 +629,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={tasks}
                   currentWeek={currentWeek}
                   onTaskToggle={handleTaskToggle}
+                  onTaskDateUpdate={handleTaskDateUpdate}
+                  onAddTaskToDate={handleAddTaskToDate}
+                  onWeekChange={handleWeekChange}
                 />
               </div>
             </section>
@@ -541,7 +646,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('note')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -554,7 +663,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('standfm')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -567,7 +680,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('instagram')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -580,7 +697,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('youtube')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -593,7 +714,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('expertise')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -606,7 +731,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('marketing')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -619,7 +748,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('business')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -632,7 +765,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('topform')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -645,7 +782,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('private')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -658,7 +799,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('other')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -671,7 +816,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={getTasksByCategory('reading')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskAdd={(category) => {
+                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
+                    setDefaultCategory(category);
+                    setIsTaskModalOpen(true);
+                  }}
                   onTaskEdit={handleEditTask}
                   onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
@@ -829,6 +978,27 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         onSubmit={handleUpdateTask}
         title={editingTask ? "タスクを編集" : "新しいタスクを追加"}
         editingTask={editingTask}
+        defaultCategory={defaultCategory}
+      />
+
+      {/* Task Rollover Modal */}
+      <TaskRolloverModal
+        isOpen={showRolloverModal}
+        onClose={handleSkipRollover}
+        onConfirm={handleConfirmRollover}
+        onSkip={handleSkipRollover}
+        incompleteTasks={incompleteTasks}
+        fromDate={rolloverFromDate}
+        toDate={rolloverToDate}
+      />
+
+      {/* Task Select Modal */}
+      <TaskSelectModal
+        isOpen={showTaskSelectModal}
+        onClose={() => setShowTaskSelectModal(false)}
+        onTaskSelect={handleTaskSelect}
+        tasks={tasks}
+        selectedDate={selectedDateForTask}
       />
     </div>
   );

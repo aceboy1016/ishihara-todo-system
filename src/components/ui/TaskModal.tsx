@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { TaskFormData, Task } from '../../types';
 
@@ -8,6 +9,7 @@ interface TaskModalProps {
   onSubmit: (taskData: TaskFormData) => void;
   title: string;
   editingTask?: Task; // 編集するタスク（新規作成時はundefined）
+  defaultCategory?: Task['category']; // 事前選択するカテゴリー
 }
 
 export const TaskModal: React.FC<TaskModalProps> = ({
@@ -15,7 +17,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onClose,
   onSubmit,
   title,
-  editingTask
+  editingTask,
+  defaultCategory
 }) => {
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
@@ -33,6 +36,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   // 編集タスクがある場合、フォームデータを設定
   useEffect(() => {
     if (editingTask) {
+      console.log('🔄 TaskModal: Setting form data for editing task', editingTask);
       setFormData({
         title: editingTask.title,
         category: editingTask.category,
@@ -47,9 +51,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       });
     } else {
       // 新規作成時はフォームをリセット
+      const category = defaultCategory || 'note';
+      console.log('✨ TaskModal: Setting default category', { defaultCategory, category });
       setFormData({
         title: '',
-        category: 'note',
+        category,
         priority: 'B',
         energy: 'medium',
         estimatedHours: 1,
@@ -60,7 +66,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         recurringInterval: 1
       });
     }
-  }, [editingTask, isOpen]);
+  }, [editingTask, isOpen, defaultCategory]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,8 +97,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  const modalContent = (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999]">
       <div className="bg-slate-800 rounded-xl shadow-2xl w-full max-w-md mx-4 border border-slate-700">
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <h2 className="text-xl font-bold text-white">{title}</h2>
@@ -266,4 +272,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };

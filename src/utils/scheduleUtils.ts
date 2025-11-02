@@ -236,6 +236,7 @@ export function getScheduledTasksForWeek(
 ): ScheduledTask[] {
   const scheduledTasks: ScheduledTask[] = [];
 
+
   for (const task of tasks) {
     if (task.scheduledDate) {
         const taskDate = new Date(task.scheduledDate);
@@ -292,7 +293,7 @@ export function getScheduledTasksForWeek(
             }
         }
     } else {
-        // フォールバック：タイトルから日付を抽出
+        // フォールバック：タイトルから日付を抽出（全カテゴリ対応）
         const schedule = extractScheduleFromTitle(task.title);
         if (schedule.day && schedule.isMonthly) {
             const currentDate = new Date(weekStart);
