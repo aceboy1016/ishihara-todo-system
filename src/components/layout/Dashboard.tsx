@@ -61,16 +61,24 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
   // 毎月のタスクの日付を動的に更新する関数
   const updateMonthlyTaskDates = (tasks: Task[]): Task[] => {
-    // getWeekDatesを使って正確な週の日付範囲を取得
     const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
 
-
     return tasks.map(task => {
-      // 【毎月X日】パターンのタスクまたはisRecurring=trueでrecurringType=monthlyのタスクを対象
       const monthlyMatch = task.title.match(/【毎月(\d+)日】/);
 
       if (monthlyMatch || (task.isRecurring && task.recurringType === 'monthly')) {
-        // タイトルから日付を抽出するか、scheduledDateから日付を抽出
+        // If the task already has a date within the current week, don't touch it.
+        // This respects manual drag-and-drop or edits.
+        if (task.scheduledDate) {
+          const taskDate = new Date(task.scheduledDate);
+          // Adjust for timezone offset to compare dates correctly
+          const taskDateWithoutTime = new Date(taskDate.valueOf() + taskDate.getTimezoneOffset() * 60 * 1000);
+
+          if (taskDateWithoutTime >= weekStart && taskDateWithoutTime <= weekEnd) {
+            return task; // Leave it alone
+          }
+        }
+
         let targetDay: number;
 
         if (monthlyMatch) {
@@ -82,12 +90,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           return task;
         }
 
-        // 週の範囲に含まれる適切な月の日付を計算
         let targetDate: Date;
-
-        // 週の開始月で試す
         const startMonthDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), targetDay);
-        // 週の終了月で試す
         const endMonthDate = new Date(weekEnd.getFullYear(), weekEnd.getMonth(), targetDay);
 
         if (startMonthDate >= weekStart && startMonthDate <= weekEnd) {
@@ -95,7 +99,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         } else if (endMonthDate >= weekStart && endMonthDate <= weekEnd) {
           targetDate = endMonthDate;
         } else {
-          // どちらの月の日付も週の範囲に含まれない場合は、現在の月を使用
           const now = new Date();
           targetDate = new Date(now.getFullYear(), now.getMonth(), targetDay);
         }
