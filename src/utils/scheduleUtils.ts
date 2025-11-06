@@ -1,5 +1,5 @@
 import type { Task } from '../types';
-import { startOfDay } from 'date-fns';
+import { parseISO } from 'date-fns';
 
 export interface ScheduledTask {
   id: number;
@@ -61,8 +61,8 @@ function calculateNextOccurrence(
   interval: number,
   targetDate: Date
 ): Date | null {
-  const base = startOfDay(baseDate);
-  const target = startOfDay(targetDate);
+  const base = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+  const target = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
 
   // 対象日が基準日より前の場合は無効
   if (target.getTime() < base.getTime()) {
@@ -145,7 +145,7 @@ export function extractScheduledTasks(
 
   for (const task of tasks) {
     if (task.scheduledDate) {
-      const taskDate = new Date(task.scheduledDate);
+      const taskDate = parseISO(task.scheduledDate);
 
       if (task.isRecurring && task.recurringType) {
         // 繰り返しタスク: 対象月の日をループして発生日をチェック
@@ -240,7 +240,7 @@ export function getScheduledTasksForWeek(
 
   for (const task of tasks) {
     if (task.scheduledDate) {
-        const taskDate = new Date(task.scheduledDate);
+        const taskDate = parseISO(task.scheduledDate);
 
         if (task.isRecurring && task.recurringType) {
             // 繰り返しタスク: 週の範囲内の日をループして発生をチェック
