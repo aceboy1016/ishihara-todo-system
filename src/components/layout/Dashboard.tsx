@@ -21,7 +21,7 @@ import type {
   WeekHistoryEntry,
   WeeklyReflectionInput,
 } from '../../types';
-import { getWeekDateRange, getWeekDates, getCurrentWeekNumber } from '../../utils/dateUtils';
+import { getWeekDateRange, getWeekDates, getCurrentWeekNumber, isDateStringInWeek } from '../../utils/dateUtils';
 import { INITIAL_GOALS, generateInitialTasks } from '../../constants/categories';
 import { exportToJSON, downloadJSON } from '../../utils/exportUtils';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -67,27 +67,22 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       const monthlyMatch = task.title.match(/【毎月(\d+)日】/);
 
       if (monthlyMatch || (task.isRecurring && task.recurringType === 'monthly')) {
-        // If the task already has a date within the current week, don't touch it.
-        // This respects manual drag-and-drop or edits.
-        if (task.scheduledDate) {
-          const taskDate = new Date(task.scheduledDate);
-          // Adjust for timezone offset to compare dates correctly
-          const taskDateWithoutTime = new Date(taskDate.valueOf() + taskDate.getTimezoneOffset() * 60 * 1000);
-
-          if (taskDateWithoutTime >= weekStart && taskDateWithoutTime <= weekEnd) {
-            return task; // Leave it alone
-          }
+        // If the task already has a date within the current week, leave it alone.
+        if (isDateStringInWeek(task.scheduledDate, { start: weekStart, end: weekEnd })) {
+          return task;
         }
 
+        // Otherwise, proceed with the original logic to place it on the calendar.
         let targetDay: number;
 
         if (monthlyMatch) {
           targetDay = parseInt(monthlyMatch[1], 10);
         } else if (task.scheduledDate) {
+          // Fallback to the day from scheduledDate if title has no date
           const dateObj = new Date(task.scheduledDate);
           targetDay = dateObj.getDate();
         } else {
-          return task;
+          return task; // Cannot determine day, do nothing.
         }
 
         let targetDate: Date;

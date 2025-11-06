@@ -1,5 +1,16 @@
-import { format, startOfWeek, endOfWeek, addWeeks, differenceInWeeks, parseISO } from 'date-fns';
+import { format, startOfWeek, endOfWeek, addWeeks, differenceInWeeks, parseISO, isWithinInterval } from 'date-fns';
 import { ja } from 'date-fns/locale';
+
+export const isDateStringInWeek = (dateStr: string, week: { start: Date; end: Date }): boolean => {
+  if (!dateStr) return false;
+  try {
+    const taskDate = parseISO(dateStr);
+    return isWithinInterval(taskDate, week);
+  } catch (e) {
+    console.error("Invalid date string for comparison:", dateStr, e);
+    return false;
+  }
+};
 
 export const getCurrentWeekNumber = (): number => {
   // 日本時間で正確に計算
