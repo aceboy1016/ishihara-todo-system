@@ -1,4 +1,5 @@
 import type { Task } from '../types';
+import { startOfDay } from 'date-fns';
 
 export interface ScheduledTask {
   id: number;
@@ -60,8 +61,8 @@ function calculateNextOccurrence(
   interval: number,
   targetDate: Date
 ): Date | null {
-  const base = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
-  const target = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+  const base = startOfDay(baseDate);
+  const target = startOfDay(targetDate);
 
   // 対象日が基準日より前の場合は無効
   if (target.getTime() < base.getTime()) {
