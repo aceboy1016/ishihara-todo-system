@@ -1,7 +1,7 @@
 import { format, startOfWeek, endOfWeek, addWeeks, differenceInWeeks, parseISO, isWithinInterval } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
-export const isDateStringInWeek = (dateStr: string, week: { start: Date; end: Date }): boolean => {
+export const isDateStringInWeek = (dateStr: string | undefined, week: { start: Date; end: Date }): boolean => {
   if (!dateStr) return false;
   try {
     const taskDate = parseISO(dateStr);
