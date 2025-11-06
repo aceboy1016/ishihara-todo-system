@@ -57,6 +57,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   // タスク選択モーダル関連のステート
   const [showTaskSelectModal, setShowTaskSelectModal] = useState(false);
   const [selectedDateForTask, setSelectedDateForTask] = useState<Date>(new Date());
+  const [defaultTaskData, setDefaultTaskData] = useState<Partial<TaskFormData> | undefined>(undefined);
 
   // 毎月のタスクの日付を動的に更新する関数
   const updateMonthlyTaskDates = (tasks: Task[]): Task[] => {
@@ -306,6 +307,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     setIsTaskModalOpen(false);
     setEditingTask(undefined);
     setDefaultCategory(undefined);
+    setDefaultTaskData(undefined);
   };
 
   const handleTaskMove = (taskId: number, newCategory: string) => {
@@ -405,10 +407,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     setIncompleteTasks([]);
   };
 
-  // 日付にタスクを追加（既存タスクを選択）
+  // 日付にタスクを追加（新規タスクを作成）
   const handleAddTaskToDate = (date: Date) => {
-    setSelectedDateForTask(date);
-    setShowTaskSelectModal(true);
+    const dateString = formatDateToString(date);
+    setDefaultTaskData({ scheduledDate: dateString });
+    setIsTaskModalOpen(true);
   };
 
   // 選択されたタスクに日付を設定
@@ -979,6 +982,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         title={editingTask ? "タスクを編集" : "新しいタスクを追加"}
         editingTask={editingTask}
         defaultCategory={defaultCategory}
+        defaultTaskData={defaultTaskData}
       />
 
       {/* Task Rollover Modal */}

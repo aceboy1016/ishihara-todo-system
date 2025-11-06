@@ -10,6 +10,7 @@ interface TaskModalProps {
   title: string;
   editingTask?: Task; // 編集するタスク（新規作成時はundefined）
   defaultCategory?: Task['category']; // 事前選択するカテゴリー
+  defaultTaskData?: Partial<TaskFormData>;
 }
 
 export const TaskModal: React.FC<TaskModalProps> = ({
@@ -18,7 +19,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onSubmit,
   title,
   editingTask,
-  defaultCategory
+  defaultCategory,
+  defaultTaskData
 }) => {
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
@@ -63,10 +65,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         scheduledDate: '',
         isRecurring: false,
         recurringType: 'weekly',
-        recurringInterval: 1
+        recurringInterval: 1,
+        ...defaultTaskData
       });
     }
-  }, [editingTask, isOpen, defaultCategory]);
+  }, [editingTask, isOpen, defaultCategory, defaultTaskData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
