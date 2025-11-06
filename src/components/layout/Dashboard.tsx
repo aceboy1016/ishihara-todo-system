@@ -56,7 +56,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
   // タスク選択モーダル関連のステート
   const [showTaskSelectModal, setShowTaskSelectModal] = useState(false);
-  const [selectedDateForTask, setSelectedDateForTask] = useState<Date>(new Date());
+  const [selectedDateForTask] = useState<Date>(new Date());
   const [defaultTaskData, setDefaultTaskData] = useState<Partial<TaskFormData> | undefined>(undefined);
 
   // 毎月のタスクの日付を動的に更新する関数
