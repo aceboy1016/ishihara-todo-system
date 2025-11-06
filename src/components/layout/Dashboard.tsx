@@ -21,7 +21,7 @@ import type {
   WeekHistoryEntry,
   WeeklyReflectionInput,
 } from '../../types';
-import { getWeekDateRange, getWeekDates, getCurrentWeekNumber, isDateStringInWeek } from '../../utils/dateUtils';
+import { getWeekDateRange, getCurrentWeekNumber } from '../../utils/dateUtils';
 import { INITIAL_GOALS, generateInitialTasks } from '../../constants/categories';
 import { exportToJSON, downloadJSON } from '../../utils/exportUtils';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -295,8 +295,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       }
     } else {
       const initialTasks = generateInitialTasks();
-      const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
-      setTasks(updatedInitialTasks);
+      setTasks(initialTasks);
     }
   }, [currentWeek]);
 
