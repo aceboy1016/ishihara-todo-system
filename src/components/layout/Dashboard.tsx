@@ -59,57 +59,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [selectedDateForTask] = useState<Date>(new Date());
   const [defaultTaskData, setDefaultTaskData] = useState<Partial<TaskFormData> | undefined>(undefined);
 
-  // 毎月のタスクの日付を動的に更新する関数
-  const updateMonthlyTaskDates = (tasks: Task[]): Task[] => {
-    const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
-
-    return tasks.map(task => {
-      const monthlyMatch = task.title.match(/【毎月(\d+)日】/);
-
-      if (monthlyMatch || (task.isRecurring && task.recurringType === 'monthly')) {
-        // If the task already has a date within the current week, leave it alone.
-        if (isDateStringInWeek(task.scheduledDate, { start: weekStart, end: weekEnd })) {
-          return task;
-        }
-
-        // Otherwise, proceed with the original logic to place it on the calendar.
-        let targetDay: number;
-
-        if (monthlyMatch) {
-          targetDay = parseInt(monthlyMatch[1], 10);
-        } else if (task.scheduledDate) {
-          // Fallback to the day from scheduledDate if title has no date
-          const dateObj = new Date(task.scheduledDate);
-          targetDay = dateObj.getDate();
-        } else {
-          return task; // Cannot determine day, do nothing.
-        }
-
-        let targetDate: Date;
-        const startMonthDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), targetDay);
-        const endMonthDate = new Date(weekEnd.getFullYear(), weekEnd.getMonth(), targetDay);
-
-        if (startMonthDate >= weekStart && startMonthDate <= weekEnd) {
-          targetDate = startMonthDate;
-        } else if (endMonthDate >= weekStart && endMonthDate <= weekEnd) {
-          targetDate = endMonthDate;
-        } else {
-          const now = new Date();
-          targetDate = new Date(now.getFullYear(), now.getMonth(), targetDay);
-        }
-
-        const newDate = `${targetDate.getFullYear()}-${(targetDate.getMonth() + 1).toString().padStart(2, '0')}-${targetDay.toString().padStart(2, '0')}`;
-
-        return {
-          ...task,
-          scheduledDate: newDate,
-          updatedAt: new Date().toISOString()
-        };
-      }
-
-      return task;
-    });
-  };
+  
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
   const [defaultCategory, setDefaultCategory] = useState<Task['category'] | undefined>(undefined);
@@ -337,14 +287,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     if (savedTasks) {
       try {
         const parsedTasks = JSON.parse(savedTasks);
-        // 月次タスクの日付を動的に更新
-        const updatedTasks = updateMonthlyTaskDates(parsedTasks);
-        setTasks(updatedTasks);
+        setTasks(parsedTasks);
       } catch (error) {
         console.error('Failed to load tasks for week', currentWeek, error);
         const initialTasks = generateInitialTasks();
-        const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
-        setTasks(updatedInitialTasks);
+        setTasks(initialTasks);
       }
     } else {
       const initialTasks = generateInitialTasks();
