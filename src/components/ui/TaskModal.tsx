@@ -54,20 +54,27 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     } else {
       // 新規作成時はフォームをリセット
       const category = defaultCategory || 'note';
-      console.log('✨ TaskModal: Setting default category', { defaultCategory, category });
-      setFormData({
+      const newFormData: TaskFormData = {
         title: '',
         category,
-        priority: 'B',
-        energy: 'medium',
+        priority: 'B' as const,
+        energy: 'medium' as const,
         estimatedHours: 1,
         notes: '',
         scheduledDate: '',
         isRecurring: false,
-        recurringType: 'weekly',
+        recurringType: 'weekly' as const,
         recurringInterval: 1,
         ...defaultTaskData
+      };
+      console.log('✨ TaskModal: Setting default data', {
+        defaultCategory,
+        category,
+        defaultTaskData,
+        newFormData,
+        scheduledDateValue: newFormData.scheduledDate
       });
+      setFormData(newFormData);
     }
   }, [editingTask, isOpen, defaultCategory, defaultTaskData]);
 
