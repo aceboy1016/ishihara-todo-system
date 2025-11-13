@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Calendar, AlertCircle, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, AlertCircle, Plus, ChevronLeft, ChevronRight, ListPlus } from 'lucide-react';
 import { useDrag, useDrop } from 'react-dnd';
 import type { Task } from '../../types';
 import {
@@ -19,6 +19,7 @@ interface WeeklyCalendarProps {
   onDateClick?: (date: Date) => void;
   onTaskDateUpdate?: (taskId: number, newDate: Date) => void;
   onAddTaskToDate?: (date: Date) => void;
+  onSelectExistingTask?: (date: Date) => void;
   onWeekChange?: (weekNumber: number) => void;
 }
 
@@ -29,6 +30,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   onDateClick,
   onTaskDateUpdate,
   onAddTaskToDate,
+  onSelectExistingTask,
   onWeekChange
 }) => {
   const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
@@ -272,10 +274,25 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                       onAddTaskToDate(date);
                     }}
                     className="w-full flex items-center justify-center space-x-1 py-1 text-xs text-slate-400 hover:text-primary-cyan hover:bg-slate-700/50 rounded transition-colors"
-                    title="タスクを追加"
+                    title="新規タスクを追加"
                   >
                     <Plus className="h-3 w-3" />
-                    <span>追加</span>
+                    <span>新規</span>
+                  </button>
+                )}
+
+                {/* 既存タスクを追加ボタン */}
+                {onSelectExistingTask && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectExistingTask(date);
+                    }}
+                    className="w-full flex items-center justify-center space-x-1 py-1 text-xs text-slate-400 hover:text-primary-green hover:bg-slate-700/50 rounded transition-colors"
+                    title="既存タスクを追加"
+                  >
+                    <ListPlus className="h-3 w-3" />
+                    <span>既存</span>
                   </button>
                 )}
 

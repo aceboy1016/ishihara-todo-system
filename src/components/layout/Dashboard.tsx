@@ -56,7 +56,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
   // タスク選択モーダル関連のステート
   const [showTaskSelectModal, setShowTaskSelectModal] = useState(false);
-  const [selectedDateForTask] = useState<Date>(new Date());
+  const [selectedDateForTask, setSelectedDateForTask] = useState<Date>(new Date());
   const [defaultTaskData, setDefaultTaskData] = useState<Partial<TaskFormData> | undefined>(undefined);
 
   
@@ -358,6 +358,12 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     setIsTaskModalOpen(true);
   };
 
+  // 既存タスクを選択して日付に追加
+  const handleSelectExistingTask = (date: Date) => {
+    setSelectedDateForTask(date);
+    setShowTaskSelectModal(true);
+  };
+
   // 選択されたタスクに日付を設定
   const handleTaskSelect = (task: Task, selectedDate: Date) => {
     // タイムゾーンの問題を解決するため、ローカル日付を使用
@@ -578,6 +584,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskDateUpdate={handleTaskDateUpdate}
                   onAddTaskToDate={handleAddTaskToDate}
+                  onSelectExistingTask={handleSelectExistingTask}
                   onWeekChange={handleWeekChange}
                 />
               </div>
