@@ -67,29 +67,27 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   }, [weekStart, weekEnd]);
 
   const getTasksForDate = (date: Date): ScheduledTask[] => {
+    // タイムゾーンの問題を回避するため、ISO文字列の日付部分で比較
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
     const result = scheduledTasks.filter(task => {
       const taskDate = task.scheduledDate;
-      const match = taskDate.getDate() === date.getDate() &&
-             taskDate.getMonth() === date.getMonth() &&
-             taskDate.getFullYear() === date.getFullYear();
+      const taskDateStr = `${taskDate.getFullYear()}-${String(taskDate.getMonth() + 1).padStart(2, '0')}-${String(taskDate.getDate()).padStart(2, '0')}`;
 
-      if (scheduledTasks.length > 0) {
-        console.log('🔍 getTasksForDate:', {
-          checkingDate: date.toISOString().split('T')[0],
-          taskId: task.id,
-          taskDate: taskDate.toISOString().split('T')[0],
-          taskTitle: task.title.substring(0, 20),
-          match,
-          dateDetails: {
-            checkDate: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
-            taskDateParsed: `${taskDate.getFullYear()}-${taskDate.getMonth()}-${taskDate.getDate()}`
-          }
-        });
-      }
+      const match = dateStr === taskDateStr;
+
+      console.log('🔍 getTasksForDate:', {
+        dateStr,
+        taskDateStr,
+        taskId: task.id,
+        taskTitle: task.title.substring(0, 30),
+        match
+      });
 
       return match;
     });
 
+    console.log(`📊 getTasksForDate result for ${dateStr}:`, result.length, 'tasks');
     return result;
   };
 
