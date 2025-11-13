@@ -1,10 +1,21 @@
 import type { Task } from '../types';
 
 /**
+ * 日付を YYYY-MM-DD 形式でフォーマット
+ * タイムゾーンの影響を受けないようローカル時間で処理
+ */
+export function formatDateToString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
  * 指定した日付の未完了タスクを検出する
  */
 export function getIncompleteTasksForDate(tasks: Task[], targetDate: Date): Task[] {
-  const dateString = targetDate.toISOString().split('T')[0];
+  const dateString = formatDateToString(targetDate);
 
   return tasks.filter(task => {
     // 指定日に予定されていて、未完了のタスク
@@ -80,7 +91,7 @@ export function rolloverIncompleteTasks(
   toDate: Date
 ): { updatedTasks: Task[]; rolledOverTasks: Task[] } {
   const incompleteTasks = getIncompleteTasksForDate(tasks, fromDate);
-  const toDateString = toDate.toISOString().split('T')[0];
+  const toDateString = formatDateToString(toDate);
 
   const rolledOverTasks: Task[] = [];
   const updatedTasks = tasks.map(task => {
@@ -93,7 +104,7 @@ export function rolloverIncompleteTasks(
           ...task,
           scheduledDate: toDateString,
           updatedAt: new Date().toISOString(),
-          rolloverFrom: fromDate.toISOString().split('T')[0] // 繰り越し元の記録
+          rolloverFrom: formatDateToString(fromDate) // 繰り越し元の記録
         };
         rolledOverTasks.push(updatedTask);
         return updatedTask;
@@ -108,7 +119,7 @@ export function rolloverIncompleteTasks(
         completedDate: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        rolloverFrom: fromDate.toISOString().split('T')[0],
+        rolloverFrom: formatDateToString(fromDate),
         title: `${task.title} (繰り越し)`
       };
       rolledOverTasks.push(newTaskInstance);
@@ -145,11 +156,4 @@ export function getYesterday(): Date {
  */
 export function getToday(): Date {
   return new Date();
-}
-
-/**
- * 日付を YYYY-MM-DD 形式でフォーマット
- */
-export function formatDateToString(date: Date): string {
-  return date.toISOString().split('T')[0];
 }
