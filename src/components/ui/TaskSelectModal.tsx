@@ -38,7 +38,10 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
 
   // 日付が設定されていないか、今回設定する日付と異なるタスクのみを表示
   const availableTasks = useMemo(() => {
-    const selectedDateString = selectedDate.toISOString().split('T')[0];
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(selectedDate.getDate()).padStart(2, '0');
+    const selectedDateString = `${year}-${month}-${day}`;
 
     return tasks.filter(task => {
       // 既に同じ日付に設定されているタスクは除外
