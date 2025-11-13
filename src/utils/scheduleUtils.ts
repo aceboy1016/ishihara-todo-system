@@ -258,8 +258,23 @@ export function getScheduledTasksForWeek(
             });
 
             // 繰り返しタスク: 週の範囲内の日をループして発生をチェック
-            const currentDate = new Date(weekStart);
-            while (currentDate <= weekEnd) {
+            // タイムゾーン問題を回避するため、ローカル日付で直接操作
+            let checkYear = weekStart.getFullYear();
+            let checkMonth = weekStart.getMonth();
+            let checkDay = weekStart.getDate();
+
+            const endYear = weekEnd.getFullYear();
+            const endMonth = weekEnd.getMonth();
+            const endDay = weekEnd.getDate();
+
+            while (
+              checkYear < endYear ||
+              (checkYear === endYear && checkMonth < endMonth) ||
+              (checkYear === endYear && checkMonth === endMonth && checkDay <= endDay)
+            ) {
+                // ローカル時間で正確な日付を作成（タイムゾーンの影響なし）
+                const currentDate = new Date(checkYear, checkMonth, checkDay, 12, 0, 0);
+
                 const occurrence = calculateNextOccurrence(
                     taskDate,
                     task.recurringType,
@@ -268,12 +283,26 @@ export function getScheduledTasksForWeek(
                 );
 
                 if (occurrence) {
+                    // ローカル時間で日付を再作成
+                    const localOccurrence = new Date(
+                      occurrence.getFullYear(),
+                      occurrence.getMonth(),
+                      occurrence.getDate(),
+                      12, 0, 0
+                    );
+
                     console.log('✅ Found occurrence:', {
                       taskId: task.id,
-                      date: occurrence.toISOString().split('T')[0]
+                      checkDate: `${checkYear}-${String(checkMonth + 1).padStart(2, '0')}-${String(checkDay).padStart(2, '0')}`,
+                      occurrenceDate: `${localOccurrence.getFullYear()}-${String(localOccurrence.getMonth() + 1).padStart(2, '0')}-${String(localOccurrence.getDate()).padStart(2, '0')}`
                     });
+
                     // 重複追加を防止
-                    if (!scheduledTasks.some(t => t.id === task.id && t.scheduledDate.getTime() === occurrence.getTime())) {
+                    const occurrenceKey = `${task.id}-${localOccurrence.getFullYear()}-${localOccurrence.getMonth()}-${localOccurrence.getDate()}`;
+                    if (!scheduledTasks.some(t => {
+                      const tKey = `${t.id}-${t.scheduledDate.getFullYear()}-${t.scheduledDate.getMonth()}-${t.scheduledDate.getDate()}`;
+                      return tKey === occurrenceKey;
+                    })) {
                         scheduledTasks.push({
                             id: task.id,
                             title: task.title,
@@ -282,19 +311,46 @@ export function getScheduledTasksForWeek(
                             energy: task.energy,
                             completed: task.completed,
                             estimatedHours: task.estimatedHours,
-                            scheduledDate: occurrence,
-                            scheduledDay: occurrence.getDate(),
+                            scheduledDate: localOccurrence,
+                            scheduledDay: localOccurrence.getDate(),
                             isMonthly: task.recurringType === 'monthly',
                             isFixed: false,
                             notes: task.notes,
                         });
                     }
                 }
-                currentDate.setDate(currentDate.getDate() + 1);
+
+                // 次の日へ
+                checkDay++;
+                const tempDate = new Date(checkYear, checkMonth, checkDay);
+                checkYear = tempDate.getFullYear();
+                checkMonth = tempDate.getMonth();
+                checkDay = tempDate.getDate();
             }
         } else {
-            // 単発タスク
-            if (taskDate >= weekStart && taskDate <= weekEnd) {
+            // 単発タスク - タイムゾーン問題を回避
+            const localTaskDate = new Date(
+              taskDate.getFullYear(),
+              taskDate.getMonth(),
+              taskDate.getDate(),
+              12, 0, 0
+            );
+
+            const localWeekStart = new Date(
+              weekStart.getFullYear(),
+              weekStart.getMonth(),
+              weekStart.getDate(),
+              0, 0, 0
+            );
+
+            const localWeekEnd = new Date(
+              weekEnd.getFullYear(),
+              weekEnd.getMonth(),
+              weekEnd.getDate(),
+              23, 59, 59
+            );
+
+            if (localTaskDate >= localWeekStart && localTaskDate <= localWeekEnd) {
                 scheduledTasks.push({
                     id: task.id,
                     title: task.title,
@@ -303,8 +359,8 @@ export function getScheduledTasksForWeek(
                     energy: task.energy,
                     completed: task.completed,
                     estimatedHours: task.estimatedHours,
-                    scheduledDate: taskDate,
-                    scheduledDay: taskDate.getDate(),
+                    scheduledDate: localTaskDate,
+                    scheduledDay: localTaskDate.getDate(),
                     isMonthly: false,
                     isFixed: true,
                     notes: task.notes,
@@ -315,9 +371,21 @@ export function getScheduledTasksForWeek(
         // フォールバック：タイトルから日付を抽出（全カテゴリ対応）
         const schedule = extractScheduleFromTitle(task.title);
         if (schedule.day && schedule.isMonthly) {
-            const currentDate = new Date(weekStart);
-            while (currentDate <= weekEnd) {
-                if (currentDate.getDate() === schedule.day) {
+            let checkYear = weekStart.getFullYear();
+            let checkMonth = weekStart.getMonth();
+            let checkDay = weekStart.getDate();
+
+            const endYear = weekEnd.getFullYear();
+            const endMonth = weekEnd.getMonth();
+            const endDay = weekEnd.getDate();
+
+            while (
+              checkYear < endYear ||
+              (checkYear === endYear && checkMonth < endMonth) ||
+              (checkYear === endYear && checkMonth === endMonth && checkDay <= endDay)
+            ) {
+                if (checkDay === schedule.day) {
+                    const localDate = new Date(checkYear, checkMonth, checkDay, 12, 0, 0);
                     scheduledTasks.push({
                         id: task.id,
                         title: task.title,
@@ -326,14 +394,19 @@ export function getScheduledTasksForWeek(
                         energy: task.energy,
                         completed: task.completed,
                         estimatedHours: task.estimatedHours,
-                        scheduledDate: new Date(currentDate),
+                        scheduledDate: localDate,
                         scheduledDay: schedule.day,
                         isMonthly: true,
                         isFixed: true,
                         notes: task.notes,
                     });
                 }
-                currentDate.setDate(currentDate.getDate() + 1);
+                // 次の日へ
+                checkDay++;
+                const tempDate = new Date(checkYear, checkMonth, checkDay);
+                checkYear = tempDate.getFullYear();
+                checkMonth = tempDate.getMonth();
+                checkDay = tempDate.getDate();
             }
         }
     }
