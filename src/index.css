@@ -24,20 +24,59 @@
     min-height: 100vh;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
     color: #f8fafc;
+    transition: background 0.3s ease;
   }
 
   #root {
     min-height: 100vh;
+    will-change: transform;
+  }
+
+  /* Performance optimizations */
+  .card,
+  .btn,
+  .task-drag {
+    will-change: transform;
+    contain: layout style paint;
   }
 }
 
 @layer components {
   .card {
     @apply bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-xl;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 184, 255, 0.08) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
   }
 
   .card-hover {
     @apply hover:bg-slate-800/70 hover:border-slate-600/50 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300;
+  }
+
+  .card-hover:hover::after {
+    opacity: 1;
+    animation: cardGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes cardGlow {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(10%, 10%);
+    }
   }
 
   .gradient-text {
@@ -144,17 +183,70 @@
   }
 
   .task-drag {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: grab;
   }
 
   .task-drag:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+      0 15px 35px rgba(0, 0, 0, 0.3),
+      0 0 15px rgba(0, 184, 255, 0.2);
+  }
+
+  .task-drag:active {
+    cursor: grabbing;
+    transform: scale(1.05) rotate(2deg);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 25px rgba(0, 184, 255, 0.3);
   }
 
   .drop-zone-active {
-    background: linear-gradient(45deg, rgba(0, 184, 255, 0.1), rgba(0, 255, 136, 0.1));
-    animation: pulse 2s ease-in-out infinite;
+    background: linear-gradient(45deg, rgba(0, 184, 255, 0.15), rgba(0, 255, 136, 0.15));
+    animation: dropZonePulse 2s ease-in-out infinite;
+    border: 2px dashed rgba(0, 184, 255, 0.5);
+  }
+
+  @keyframes dropZonePulse {
+    0%, 100% {
+      background: linear-gradient(45deg, rgba(0, 184, 255, 0.15), rgba(0, 255, 136, 0.15));
+      box-shadow: 0 0 20px rgba(0, 184, 255, 0.3);
+    }
+    50% {
+      background: linear-gradient(45deg, rgba(0, 184, 255, 0.25), rgba(0, 255, 136, 0.25));
+      box-shadow: 0 0 30px rgba(0, 184, 255, 0.5);
+    }
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .scale-in {
+    animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 }
 
