@@ -36,30 +36,8 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
   const currentWeekNumber = getCurrentWeekNumber();
 
-  // デバッグ用ログ
-  console.log(`🔢 Calendar: currentWeek=${currentWeek}, actualCurrentWeek=${currentWeekNumber}`);
-
   const scheduledTasks = useMemo(() => {
-    console.log('🔍 WeeklyCalendar: Processing tasks', {
-      totalTasks: tasks.length,
-      recurringTasks: tasks.filter(t => t.isRecurring).length,
-      weekStart: weekStart.toISOString().split('T')[0],
-      weekEnd: weekEnd.toISOString().split('T')[0]
-    });
-
-    const result = getScheduledTasksForWeek(tasks, weekStart, weekEnd);
-
-    console.log('📅 WeeklyCalendar: Scheduled tasks', {
-      count: result.length,
-      tasks: result.map(t => ({
-        id: t.id,
-        title: t.title.substring(0, 30),
-        date: t.scheduledDate.toISOString().split('T')[0],
-        isMonthly: t.isMonthly
-      }))
-    });
-
-    return result;
+    return getScheduledTasksForWeek(tasks, weekStart, weekEnd);
   }, [tasks, weekStart, weekEnd]);
 
   const dateRange = useMemo(() => {
@@ -70,25 +48,12 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
     // タイムゾーンの問題を回避するため、ISO文字列の日付部分で比較
     const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-    const result = scheduledTasks.filter(task => {
+    return scheduledTasks.filter(task => {
       const taskDate = task.scheduledDate;
       const taskDateStr = `${taskDate.getFullYear()}-${String(taskDate.getMonth() + 1).padStart(2, '0')}-${String(taskDate.getDate()).padStart(2, '0')}`;
 
-      const match = dateStr === taskDateStr;
-
-      console.log('🔍 getTasksForDate:', {
-        dateStr,
-        taskDateStr,
-        taskId: task.id,
-        taskTitle: task.title.substring(0, 30),
-        match
-      });
-
-      return match;
+      return dateStr === taskDateStr;
     });
-
-    console.log(`📊 getTasksForDate result for ${dateStr}:`, result.length, 'tasks');
-    return result;
   };
 
   const getDateMetrics = (date: Date) => {

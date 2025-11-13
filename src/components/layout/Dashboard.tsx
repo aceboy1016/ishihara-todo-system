@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { ProgressCard } from '../analytics/ProgressCard';
 import { AnalyticsCard } from '../analytics/AnalyticsCard';
 import { TaskCategory } from '../tasks/TaskCategory';
+import { RecurringTasksPanel } from '../tasks/RecurringTasksPanel';
 import { TaskModal } from '../ui/TaskModal';
 import { TaskRolloverModal } from '../ui/TaskRolloverModal';
 import { TaskSelectModal } from '../ui/TaskSelectModal';
@@ -287,31 +288,14 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     if (savedTasks) {
       try {
         const parsedTasks = JSON.parse(savedTasks);
-        console.log('📦 Dashboard: Loaded tasks from localStorage', {
-          week: currentWeek,
-          totalTasks: parsedTasks.length,
-          recurringTasks: parsedTasks.filter((t: Task) => t.isRecurring).length,
-          topformTasks: parsedTasks.filter((t: Task) => t.category === 'topform').length,
-          topformRecurringTasks: parsedTasks.filter((t: Task) => t.category === 'topform' && t.isRecurring).length
-        });
         setTasks(parsedTasks);
       } catch (error) {
         console.error('Failed to load tasks for week', currentWeek, error);
         const initialTasks = generateInitialTasks();
-        console.log('🆕 Dashboard: Using initial tasks', {
-          totalTasks: initialTasks.length,
-          recurringTasks: initialTasks.filter(t => t.isRecurring).length
-        });
         setTasks(initialTasks);
       }
     } else {
       const initialTasks = generateInitialTasks();
-      console.log('🆕 Dashboard: No saved tasks, using initial tasks', {
-        week: currentWeek,
-        totalTasks: initialTasks.length,
-        recurringTasks: initialTasks.filter(t => t.isRecurring).length,
-        topformRecurringTasks: initialTasks.filter(t => t.category === 'topform' && t.isRecurring).length
-      });
       setTasks(initialTasks);
     }
   }, [currentWeek]);
@@ -618,7 +602,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -635,7 +618,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -652,7 +634,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -669,7 +650,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -686,7 +666,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -703,7 +682,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -720,7 +698,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -737,7 +714,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -754,7 +730,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -771,7 +746,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -788,7 +762,6 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={(category) => {
-                    console.log('🎯 Dashboard: onTaskAdd called with category', category);
                     setDefaultCategory(category);
                     setIsTaskModalOpen(true);
                   }}
@@ -799,6 +772,15 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   currentWeek={currentWeek}
                 />
               </div>
+            </section>
+
+            {/* Recurring Tasks */}
+            <section className="space-y-6">
+              <RecurringTasksPanel
+                tasks={tasks}
+                onTaskEdit={handleEditTask}
+                onTaskDelete={handleDeleteTask}
+              />
             </section>
 
             <section className="space-y-6">

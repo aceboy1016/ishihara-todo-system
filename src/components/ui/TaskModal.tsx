@@ -38,7 +38,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   // 編集タスクがある場合、フォームデータを設定
   useEffect(() => {
     if (editingTask) {
-      console.log('🔄 TaskModal: Setting form data for editing task', editingTask);
       setFormData({
         title: editingTask.title,
         category: editingTask.category,
@@ -67,13 +66,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         recurringInterval: 1,
         ...defaultTaskData
       };
-      console.log('✨ TaskModal: Setting default data', {
-        defaultCategory,
-        category,
-        defaultTaskData,
-        newFormData,
-        scheduledDateValue: newFormData.scheduledDate
-      });
       setFormData(newFormData);
     }
   }, [editingTask, isOpen, defaultCategory, defaultTaskData]);

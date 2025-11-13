@@ -237,25 +237,11 @@ export function getScheduledTasksForWeek(
 ): ScheduledTask[] {
   const scheduledTasks: ScheduledTask[] = [];
 
-  console.log('🔍 scheduleUtils: getScheduledTasksForWeek called', {
-    tasksCount: tasks.length,
-    recurringTasksCount: tasks.filter(t => t.isRecurring).length,
-    weekStart: weekStart.toISOString().split('T')[0],
-    weekEnd: weekEnd.toISOString().split('T')[0]
-  });
-
   for (const task of tasks) {
     if (task.scheduledDate) {
         const taskDate = parseISO(task.scheduledDate);
 
         if (task.isRecurring && task.recurringType) {
-            console.log('🔄 Processing recurring task:', {
-              id: task.id,
-              title: task.title.substring(0, 40),
-              scheduledDate: task.scheduledDate,
-              recurringType: task.recurringType,
-              interval: task.recurringInterval
-            });
 
             // 繰り返しタスク: 週の範囲内の日をループして発生をチェック
             // タイムゾーン問題を回避するため、ローカル日付で直接操作
@@ -290,12 +276,6 @@ export function getScheduledTasksForWeek(
                       occurrence.getDate(),
                       12, 0, 0
                     );
-
-                    console.log('✅ Found occurrence:', {
-                      taskId: task.id,
-                      checkDate: `${checkYear}-${String(checkMonth + 1).padStart(2, '0')}-${String(checkDay).padStart(2, '0')}`,
-                      occurrenceDate: `${localOccurrence.getFullYear()}-${String(localOccurrence.getMonth() + 1).padStart(2, '0')}-${String(localOccurrence.getDate()).padStart(2, '0')}`
-                    });
 
                     // 重複追加を防止
                     const occurrenceKey = `${task.id}-${localOccurrence.getFullYear()}-${localOccurrence.getMonth()}-${localOccurrence.getDate()}`;
