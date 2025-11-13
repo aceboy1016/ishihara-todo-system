@@ -26,6 +26,8 @@ const categoryConfig = {
   reading: { icon: '📚', name: '読書' }
 };
 
+const CATEGORY_STORAGE_KEY = 'taskSelectModal_lastCategory';
+
 export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
   isOpen,
   onClose,
@@ -34,7 +36,10 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
   selectedDate
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  // 最後に選択したカテゴリを記憶、デフォルトはTOPFORM
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => {
+    return localStorage.getItem(CATEGORY_STORAGE_KEY) || 'topform';
+  });
 
   // 日付が設定されていないか、今回設定する日付と異なるタスクのみを表示
   const availableTasks = useMemo(() => {
@@ -68,10 +73,16 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
     });
   }, [tasks, selectedDate, searchTerm, selectedCategory]);
 
+  // カテゴリ変更時にlocalStorageに保存
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    localStorage.setItem(CATEGORY_STORAGE_KEY, category);
+  };
+
   const handleTaskClick = (task: Task) => {
     onTaskSelect(task, selectedDate);
     setSearchTerm('');
-    setSelectedCategory('all');
+    // カテゴリはリセットせず、次回も同じカテゴリを維持
     onClose();
   };
 
@@ -113,7 +124,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
             {/* カテゴリフィルター */}
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => setSelectedCategory('all')}
+                onClick={() => handleCategoryChange('all')}
                 className={clsx(
                   'px-3 py-1 rounded-full text-xs transition-colors',
                   selectedCategory === 'all'
@@ -126,7 +137,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
               {Object.entries(categoryConfig).map(([key, config]) => (
                 <button
                   key={key}
-                  onClick={() => setSelectedCategory(key)}
+                  onClick={() => handleCategoryChange(key)}
                   className={clsx(
                     'px-3 py-1 rounded-full text-xs transition-colors flex items-center space-x-1',
                     selectedCategory === key
