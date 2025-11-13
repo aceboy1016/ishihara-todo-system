@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { ProgressCard } from '../analytics/ProgressCard';
 import { AnalyticsCard } from '../analytics/AnalyticsCard';
 import { TaskCategory } from '../tasks/TaskCategory';
+import { RecurringTasksPanel } from '../tasks/RecurringTasksPanel';
 import { TaskModal } from '../ui/TaskModal';
 import { TaskRolloverModal } from '../ui/TaskRolloverModal';
 import { TaskSelectModal } from '../ui/TaskSelectModal';
@@ -771,6 +772,15 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   currentWeek={currentWeek}
                 />
               </div>
+            </section>
+
+            {/* Recurring Tasks */}
+            <section className="space-y-6">
+              <RecurringTasksPanel
+                tasks={tasks}
+                onTaskEdit={handleEditTask}
+                onTaskDelete={handleDeleteTask}
+              />
             </section>
 
             <section className="space-y-6">
