@@ -67,12 +67,30 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   }, [weekStart, weekEnd]);
 
   const getTasksForDate = (date: Date): ScheduledTask[] => {
-    return scheduledTasks.filter(task => {
+    const result = scheduledTasks.filter(task => {
       const taskDate = task.scheduledDate;
-      return taskDate.getDate() === date.getDate() &&
+      const match = taskDate.getDate() === date.getDate() &&
              taskDate.getMonth() === date.getMonth() &&
              taskDate.getFullYear() === date.getFullYear();
+
+      if (scheduledTasks.length > 0) {
+        console.log('🔍 getTasksForDate:', {
+          checkingDate: date.toISOString().split('T')[0],
+          taskId: task.id,
+          taskDate: taskDate.toISOString().split('T')[0],
+          taskTitle: task.title.substring(0, 20),
+          match,
+          dateDetails: {
+            checkDate: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+            taskDateParsed: `${taskDate.getFullYear()}-${taskDate.getMonth()}-${taskDate.getDate()}`
+          }
+        });
+      }
+
+      return match;
     });
+
+    return result;
   };
 
   const getDateMetrics = (date: Date) => {
