@@ -40,7 +40,26 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
   console.log(`🔢 Calendar: currentWeek=${currentWeek}, actualCurrentWeek=${currentWeekNumber}`);
 
   const scheduledTasks = useMemo(() => {
-    return getScheduledTasksForWeek(tasks, weekStart, weekEnd);
+    console.log('🔍 WeeklyCalendar: Processing tasks', {
+      totalTasks: tasks.length,
+      recurringTasks: tasks.filter(t => t.isRecurring).length,
+      weekStart: weekStart.toISOString().split('T')[0],
+      weekEnd: weekEnd.toISOString().split('T')[0]
+    });
+
+    const result = getScheduledTasksForWeek(tasks, weekStart, weekEnd);
+
+    console.log('📅 WeeklyCalendar: Scheduled tasks', {
+      count: result.length,
+      tasks: result.map(t => ({
+        id: t.id,
+        title: t.title.substring(0, 30),
+        date: t.scheduledDate.toISOString().split('T')[0],
+        isMonthly: t.isMonthly
+      }))
+    });
+
+    return result;
   }, [tasks, weekStart, weekEnd]);
 
   const dateRange = useMemo(() => {

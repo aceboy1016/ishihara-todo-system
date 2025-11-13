@@ -237,12 +237,26 @@ export function getScheduledTasksForWeek(
 ): ScheduledTask[] {
   const scheduledTasks: ScheduledTask[] = [];
 
+  console.log('🔍 scheduleUtils: getScheduledTasksForWeek called', {
+    tasksCount: tasks.length,
+    recurringTasksCount: tasks.filter(t => t.isRecurring).length,
+    weekStart: weekStart.toISOString().split('T')[0],
+    weekEnd: weekEnd.toISOString().split('T')[0]
+  });
 
   for (const task of tasks) {
     if (task.scheduledDate) {
         const taskDate = parseISO(task.scheduledDate);
 
         if (task.isRecurring && task.recurringType) {
+            console.log('🔄 Processing recurring task:', {
+              id: task.id,
+              title: task.title.substring(0, 40),
+              scheduledDate: task.scheduledDate,
+              recurringType: task.recurringType,
+              interval: task.recurringInterval
+            });
+
             // 繰り返しタスク: 週の範囲内の日をループして発生をチェック
             const currentDate = new Date(weekStart);
             while (currentDate <= weekEnd) {
@@ -254,6 +268,10 @@ export function getScheduledTasksForWeek(
                 );
 
                 if (occurrence) {
+                    console.log('✅ Found occurrence:', {
+                      taskId: task.id,
+                      date: occurrence.toISOString().split('T')[0]
+                    });
                     // 重複追加を防止
                     if (!scheduledTasks.some(t => t.id === task.id && t.scheduledDate.getTime() === occurrence.getTime())) {
                         scheduledTasks.push({
