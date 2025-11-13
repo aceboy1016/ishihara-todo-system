@@ -16,8 +16,20 @@ body {
   margin: 0;
   min-height: 100vh;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 20s ease infinite;
   color: #f1f5f9;
   position: relative;
+  overflow-x: hidden;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 #fluid-canvas {
@@ -28,6 +40,39 @@ body {
   display: block;
   z-index: -1;
   pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Floating particles overlay */
+.particles-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, rgba(0, 184, 255, 0.4), transparent),
+    radial-gradient(2px 2px at 60% 70%, rgba(0, 255, 136, 0.4), transparent),
+    radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 80% 10%, rgba(0, 184, 255, 0.3), transparent),
+    radial-gradient(2px 2px at 90% 60%, rgba(0, 255, 136, 0.3), transparent),
+    radial-gradient(1px 1px at 33% 80%, rgba(255, 255, 255, 0.2), transparent);
+  background-size: 200% 200%;
+  background-position: 0% 0%;
+  animation: particlesFloat 30s ease-in-out infinite;
+}
+
+@keyframes particlesFloat {
+  0%, 100% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 80% 20%, 20% 80%, 40% 60%;
+  }
+  33% {
+    background-position: 30% 30%, 70% 70%, 60% 40%, 90% 10%, 10% 90%, 50% 50%;
+  }
+  66% {
+    background-position: 60% 60%, 40% 40%, 70% 30%, 100% 0%, 0% 100%, 60% 40%;
+  }
 }
 
 .card {
@@ -35,14 +80,40 @@ body {
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 12px;
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 184, 255, 0.3), rgba(0, 255, 136, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .card-hover:hover {
   background: rgba(30, 41, 59, 0.95);
   border-color: rgba(148, 163, 184, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(0, 184, 255, 0.2);
+}
+
+.card-hover:hover::before {
+  opacity: 1;
+}
+
+.card-hover:active {
+  transform: translateY(-2px) scale(1.005);
+  transition: all 0.1s ease;
 }
 
 .gradient-text {
@@ -80,35 +151,67 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 8px;
   font-weight: 500;
   font-size: 14px;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   border: 1px solid transparent;
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn:hover::before {
+  opacity: 1;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #00b8ff, #00ff88);
   color: white;
+  box-shadow: 0 2px 8px rgba(0, 184, 255, 0.2);
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 184, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 20px rgba(0, 184, 255, 0.4),
+    0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 184, 255, 0.3);
 }
 
 .btn-secondary {
   background: rgba(71, 85, 105, 0.5);
   color: #f1f5f9;
   border-color: rgba(148, 163, 184, 0.2);
+  backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
   background: rgba(71, 85, 105, 0.8);
   border-color: rgba(148, 163, 184, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
 }
 
 .form-input {
@@ -119,17 +222,37 @@ body {
   border-radius: 8px;
   color: #f1f5f9;
   font-size: 14px;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.form-input:hover {
+  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.9);
 }
 
 .form-input:focus {
   outline: none;
   border-color: #00b8ff;
-  box-shadow: 0 0 0 3px rgba(0, 184, 255, 0.1);
+  box-shadow:
+    0 0 0 3px rgba(0, 184, 255, 0.15),
+    0 0 20px rgba(0, 184, 255, 0.1);
+  background: rgba(15, 23, 42, 0.95);
+  transform: translateY(-1px);
 }
 
 .form-input::placeholder {
   color: rgba(148, 163, 184, 0.6);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) rgba(15, 23, 42, 0.5);
 }
 
 @keyframes pulse {
@@ -167,20 +290,29 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.5);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 4px;
+  background: linear-gradient(135deg, rgba(0, 184, 255, 0.5), rgba(0, 255, 136, 0.5));
+  border-radius: 10px;
+  border: 2px solid rgba(15, 23, 42, 0.5);
+  transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: linear-gradient(135deg, rgba(0, 184, 255, 0.8), rgba(0, 255, 136, 0.8));
+  border-color: rgba(15, 23, 42, 0.3);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(135deg, #00b8ff, #00ff88);
 }
 
 /* Focus States for Accessibility */
@@ -190,4 +322,120 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 2px solid #00b8ff;
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 184, 255, 0.1);
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 184, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: #00b8ff;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Shimmer Effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.1) 0%,
+    rgba(148, 163, 184, 0.3) 50%,
+    rgba(148, 163, 184, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.95);
+  color: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip.visible {
+  opacity: 1;
+}
+
+/* Enhanced Interactive Elements */
+button,
+a,
+.clickable {
+  position: relative;
+  overflow: hidden;
+}
+
+button::after,
+a::after,
+.clickable::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+button:active::after,
+a:active::after,
+.clickable:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Stagger Animation for Lists */
+.stagger-item {
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.stagger-item:nth-child(8) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
