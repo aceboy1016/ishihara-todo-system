@@ -81,10 +81,20 @@ function calculateNextOccurrence(
 
     case 'weekly': {
       if (target.getDay() === base.getDay()) {
-        const diffTime = target.getTime() - base.getTime();
-        const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-        if (diffWeeks >= 0 && diffWeeks % interval === 0) {
-          return targetDate;
+        // より正確な週数計算のため、日付のみを使用
+        const baseNormalized = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+        const targetNormalized = new Date(target.getFullYear(), target.getMonth(), target.getDate());
+
+        // 基準日から対象日までの日数を計算
+        const diffTime = targetNormalized.getTime() - baseNormalized.getTime();
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+        // 日数が7の倍数かつ、間隔に合致するかチェック
+        if (diffDays >= 0 && diffDays % 7 === 0) {
+          const diffWeeks = diffDays / 7;
+          if (diffWeeks % interval === 0) {
+            return targetDate;
+          }
         }
       }
       break;
@@ -238,6 +248,7 @@ export function getScheduledTasksForWeek(
   const scheduledTasks: ScheduledTask[] = [];
 
   for (const task of tasks) {
+
     if (task.scheduledDate) {
         const taskDate = parseISO(task.scheduledDate);
 

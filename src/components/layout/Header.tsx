@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Target, Calendar, Download, Upload, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { BarChart3, Target, Calendar, Download, Upload, Settings, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 
 interface HeaderProps {
   currentWeek: number;
@@ -127,6 +127,38 @@ export const Header: React.FC<HeaderProps> = ({
                 title="データエクスポート"
               >
                 <Download className="h-4 w-4" />
+              </button>
+
+              <button
+                onClick={() => {
+                  if (confirm('データをリセットして初期タスクを読み込みます。')) {
+                    // 全ての関連データを完全削除
+                    const keysToRemove = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                      const key = localStorage.key(i);
+                      if (key && (
+                        key.includes('strategic-todo') ||
+                        key.includes('ishihara') ||
+                        key.includes('recurring') ||
+                        key.includes('task') ||
+                        key.includes('week')
+                      )) {
+                        keysToRemove.push(key);
+                      }
+                    }
+                    keysToRemove.forEach(key => localStorage.removeItem(key));
+
+                    // 初期データ強制読み込みフラグを設定
+                    sessionStorage.setItem('force-reload-initial-tasks', 'true');
+
+                    // 即座にリロード
+                    window.location.href = window.location.href;
+                  }
+                }}
+                className="p-2 rounded-lg text-red-400 hover:text-white hover:bg-red-700/50 transition-colors"
+                title="データクリア"
+              >
+                <Trash2 className="h-4 w-4" />
               </button>
 
               <button

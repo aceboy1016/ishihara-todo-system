@@ -190,7 +190,6 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
               {currentWeek !== currentWeekNumber && (
                 <button
                   onClick={() => {
-                    console.log(`🎯 Go to current week: ${currentWeekNumber}`);
                     onWeekChange(currentWeekNumber);
                   }}
                   className="px-3 py-1 text-xs bg-primary-cyan hover:bg-primary-cyan/80 text-white rounded-full transition-colors font-medium"

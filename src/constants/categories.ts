@@ -277,6 +277,58 @@ export function generateInitialTasks() {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
+  // 週間繰り返しタスクの例（過去の基準日で設定）
+  {
+    id: 999,
+    category: 'expertise' as const,
+    title: '毎週月曜日のトレーニングセッション計画',
+    priority: 'A' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 2,
+    notes: '毎週月曜日に次週のトレーニングプログラムを準備',
+    scheduledDate: '2024-10-28', // 2024年10月28日（月曜日）の基準日 - 過去の日付
+    isRecurring: true,
+    recurringType: 'weekly' as const,
+    recurringInterval: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 1000,
+    category: 'marketing' as const,
+    title: '毎週金曜日のSNS投稿計画',
+    priority: 'A' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 1.5,
+    notes: '毎週金曜日に次週のSNS投稿内容を計画',
+    scheduledDate: '2024-11-01', // 2024年11月1日（金曜日）の基準日 - 過去の日付
+    isRecurring: true,
+    recurringType: 'weekly' as const,
+    recurringInterval: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 1001,
+    category: 'note' as const,
+    title: '毎週水曜日のnote記事執筆',
+    priority: 'A' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 3,
+    notes: '毎週水曜日にnote記事を執筆',
+    scheduledDate: '2024-10-30', // 2024年10月30日（水曜日）の基準日 - 過去の日付
+    isRecurring: true,
+    recurringType: 'weekly' as const,
+    recurringInterval: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
   // 毎月1日の業務
   {
     id: 3,

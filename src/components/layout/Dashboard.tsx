@@ -272,9 +272,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   // Load tasks for current week on mount and week change
   React.useEffect(() => {
     const weekKey = `strategic-todo-tasks-week${currentWeek}`;
-
+    const recurringTasksKey = 'strategic-todo-recurring-tasks';
 
     let savedTasks = localStorage.getItem(weekKey);
+    let recurringTasks = localStorage.getItem(recurringTasksKey);
 
     // Migration: If week 39 data doesn't exist but v2 data exists, migrate it
     if (!savedTasks && currentWeek === 39) {
@@ -285,25 +286,80 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       }
     }
 
+    let weekTasks: Task[] = [];
+    let globalRecurringTasks: Task[] = [];
+
+    // 週固有のタスクを読み込み
     if (savedTasks) {
       try {
-        const parsedTasks = JSON.parse(savedTasks);
-        setTasks(parsedTasks);
+        weekTasks = JSON.parse(savedTasks);
       } catch (error) {
         console.error('Failed to load tasks for week', currentWeek, error);
-        const initialTasks = generateInitialTasks();
-        setTasks(initialTasks);
+        weekTasks = generateInitialTasks();
       }
     } else {
-      const initialTasks = generateInitialTasks();
-      setTasks(initialTasks);
+      weekTasks = generateInitialTasks();
     }
+
+    // 強制初期化フラグをチェック
+    if (sessionStorage.getItem('force-reload-initial-tasks')) {
+      sessionStorage.removeItem('force-reload-initial-tasks');
+      weekTasks = generateInitialTasks();
+    }
+
+    // グローバルな繰り返しタスクを読み込み
+    if (recurringTasks) {
+      try {
+        globalRecurringTasks = JSON.parse(recurringTasks);
+      } catch (error) {
+        console.error('Failed to load recurring tasks', error);
+        globalRecurringTasks = [];
+      }
+    }
+
+    // 週固有でない繰り返しタスクを週固有タスクから分離してグローバルに移行
+    const nonRecurringTasks = weekTasks.filter(task => !task.isRecurring);
+    const recurringFromWeek = weekTasks.filter(task => task.isRecurring);
+
+    // 重複を防いでグローバル繰り返しタスクに追加
+    const mergedRecurringTasks = [...globalRecurringTasks];
+    recurringFromWeek.forEach(newTask => {
+      if (!mergedRecurringTasks.some(existing => existing.id === newTask.id)) {
+        mergedRecurringTasks.push(newTask);
+      }
+    });
+
+    // グローバル繰り返しタスクを保存
+    if (mergedRecurringTasks.length > 0) {
+      localStorage.setItem(recurringTasksKey, JSON.stringify(mergedRecurringTasks));
+    }
+
+    // 週固有タスクのみを保存（繰り返しタスクを除外）
+    if (recurringFromWeek.length > 0) {
+      localStorage.setItem(weekKey, JSON.stringify(nonRecurringTasks));
+    }
+
+    // 最終的なタスクリストを作成（週固有 + グローバル繰り返し）
+    const finalTasks = [...nonRecurringTasks, ...mergedRecurringTasks];
+    setTasks(finalTasks);
   }, [currentWeek]);
 
   // Save tasks to localStorage whenever tasks change
   React.useEffect(() => {
     const weekKey = `strategic-todo-tasks-week${currentWeek}`;
-    localStorage.setItem(weekKey, JSON.stringify(tasks));
+    const recurringTasksKey = 'strategic-todo-recurring-tasks';
+
+    // タスクを週固有とグローバル繰り返しに分離
+    const nonRecurringTasks = tasks.filter(task => !task.isRecurring);
+    const recurringTasks = tasks.filter(task => task.isRecurring);
+
+    // 週固有タスクを保存
+    localStorage.setItem(weekKey, JSON.stringify(nonRecurringTasks));
+
+    // グローバル繰り返しタスクを保存
+    if (recurringTasks.length > 0) {
+      localStorage.setItem(recurringTasksKey, JSON.stringify(recurringTasks));
+    }
   }, [tasks, currentWeek]);
 
   // 繰り越しチェック用のuseEffect
@@ -578,6 +634,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   tasks={tasks}
                   currentWeek={currentWeek}
                   onTaskToggle={handleTaskToggle}
+                  onAddTaskToDate={handleAddTaskToDate}
+                  onWeekChange={handleWeekChange}
                 />
                 <WeeklyCalendar
                   tasks={tasks}

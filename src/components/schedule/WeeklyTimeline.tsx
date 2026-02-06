@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Calendar, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Task } from '../../types';
 import {
   getScheduledTasksForWeek,
@@ -10,21 +10,26 @@ import {
   shortenTaskTitle,
   type ScheduledTask
 } from '../../utils/scheduleUtils';
-import { getWeekDates } from '../../utils/dateUtils';
+import { getWeekDates, getCurrentWeekNumber } from '../../utils/dateUtils';
 import clsx from 'clsx';
 
 interface WeeklyTimelineProps {
   tasks: Task[];
   currentWeek: number;
   onTaskToggle: (taskId: number) => void;
+  onAddTaskToDate?: (date: Date) => void;
+  onWeekChange?: (weekNumber: number) => void;
 }
 
 export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
   tasks,
   currentWeek,
-  onTaskToggle
+  onTaskToggle,
+  onAddTaskToDate,
+  onWeekChange
 }) => {
   const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
+  const currentWeekNumber = getCurrentWeekNumber();
 
   const scheduledTasks = useMemo(() => {
     return getScheduledTasksForWeek(tasks, weekStart, weekEnd);
@@ -68,8 +73,50 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
           <Calendar className="h-6 w-6 text-primary-cyan" />
           <h3 className="text-lg font-bold text-white">週間スケジュール</h3>
         </div>
-        <div className="text-sm text-slate-400">
-          第{currentWeek}週 • {scheduledTasks.length}件のタスク
+
+        <div className="flex items-center space-x-4">
+          {/* 週移動ボタン */}
+          {onWeekChange && (
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => onWeekChange(currentWeek - 1)}
+                className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                title="前の週"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <div className="text-sm text-slate-400 min-w-[60px] text-center">
+                第{currentWeek}週
+              </div>
+              <button
+                onClick={() => onWeekChange(currentWeek + 1)}
+                className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                title="次の週"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+
+              {/* 現在ボタン（当週以外の時に表示） */}
+              {currentWeek !== currentWeekNumber && (
+                <button
+                  onClick={() => {
+                    onWeekChange(currentWeekNumber);
+                  }}
+                  className="px-3 py-1 text-xs bg-primary-cyan hover:bg-primary-cyan/80 text-white rounded-full transition-colors font-medium"
+                  title={`今週（第${currentWeekNumber}週）に戻る`}
+                >
+                  現在
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* onWeekChangeがない場合は従来通り */}
+          {!onWeekChange && (
+            <div className="text-sm text-slate-400">
+              第{currentWeek}週 • {scheduledTasks.length}件のタスク
+            </div>
+          )}
         </div>
       </div>
 
@@ -154,6 +201,21 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                       </div>
                     ))}
                   </div>
+                )}
+
+                {/* タスクを追加ボタン */}
+                {onAddTaskToDate && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAddTaskToDate(date);
+                    }}
+                    className="w-full flex items-center justify-center space-x-2 mt-2 py-2 text-xs text-slate-400 hover:text-primary-cyan hover:bg-slate-700/50 rounded transition-colors border border-dashed border-slate-600 hover:border-primary-cyan"
+                    title="タスクを追加"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>タスクを追加</span>
+                  </button>
                 )}
               </div>
             </div>

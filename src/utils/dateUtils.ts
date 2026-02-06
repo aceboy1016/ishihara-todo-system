@@ -23,8 +23,6 @@ export const getCurrentWeekNumber = (): number => {
 
   const weekNumber = Math.floor(differenceInWeeks(currentWeekStart, yearWeekStart)) + 1;
 
-  // デバッグ用のログ（後で削除）
-  console.log(`📅 Current week calculation: ${now.toDateString()} -> Week ${weekNumber}`);
 
   return weekNumber;
 };
