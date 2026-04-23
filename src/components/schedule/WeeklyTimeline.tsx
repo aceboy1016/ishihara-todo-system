@@ -164,18 +164,19 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                       <div
                         key={task.id}
                         className={clsx(
-                          'flex items-center space-x-3 p-3 rounded-lg border transition-all cursor-pointer',
+                          'flex items-center space-x-3 p-3 rounded-lg border transition-all cursor-pointer group',
                           getPriorityColor(task.priority),
-                          task.completed && 'opacity-60'
+                          task.completed && 'opacity-60',
+                          !task.completed && 'hover:scale-[1.02] hover:shadow-lg'
                         )}
                         onClick={() => onTaskToggle(task.id)}
                       >
-                        {/* チェックボックス */}
-                        <div className="flex-shrink-0">
+                        {/* チェックボックス - より目立つように */}
+                        <div className="flex-shrink-0 transition-transform group-hover:scale-110">
                           {task.completed ? (
-                            <CheckCircle className="h-5 w-5 text-green-400" />
+                            <CheckCircle className="h-6 w-6 text-green-400 drop-shadow-lg" />
                           ) : (
-                            <div className="h-5 w-5 border-2 border-current rounded-full"></div>
+                            <div className="h-6 w-6 border-2 border-current rounded-full group-hover:border-4 transition-all"></div>
                           )}
                         </div>
 
@@ -198,6 +199,13 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                             </span>
                           </div>
                         </div>
+
+                        {/* 完了状態の表示 */}
+                        {task.completed && (
+                          <div className="flex-shrink-0 text-xs text-green-400 font-medium">
+                            完了
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
