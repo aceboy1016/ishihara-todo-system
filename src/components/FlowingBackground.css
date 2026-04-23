@@ -6,7 +6,7 @@
   height: 100vh;
   pointer-events: none;
   opacity: 0.3;
-  z-index: 0;
+  z-index: -1;
 }
 
 .wave-layer-1 {

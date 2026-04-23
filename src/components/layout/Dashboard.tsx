@@ -528,7 +528,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative z-10">
       <Header
         currentWeek={currentWeek}
         dateRange={dateRange}
@@ -540,7 +540,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         onWeekChange={handleWeekChange}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
         {currentView === 'dashboard' && (
           <div className="space-y-8">
             {/* Progress Overview */}
