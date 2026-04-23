@@ -1,0 +1,90 @@
+/* Mobile Optimizations */
+
+/* タッチターゲットの最適化 */
+@media (max-width: 768px) {
+  /* すべてのインタラクティブ要素を44px以上に */
+  button,
+  a,
+  input[type="checkbox"],
+  input[type="radio"],
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px;
+  }
+
+  /* カードのスペーシング */
+  .card {
+    margin: 8px 0;
+  }
+
+  /* テーブルを横スクロール可能に */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* 画像の最適化 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* フォームの最適化 */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* iOSのズームを防ぐ */
+    max-width: 100%;
+  }
+
+  /* モーダルの調整 */
+  .modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* 週間スケジュールのレスポンシブ */
+  .space-y-3 > * + * {
+    margin-top: 0.5rem;
+  }
+
+  /* プログレスカードを縦に */
+  .progress-cards {
+    flex-direction: column;
+  }
+}
+
+/* iPhone SE などの小さい画面 */
+@media (max-width: 375px) {
+  body {
+    font-size: 12px;
+  }
+
+  h1 { font-size: 1.2rem; }
+  h2 { font-size: 1.1rem; }
+  h3 { font-size: 1rem; }
+
+  .card {
+    padding: 8px !important;
+  }
+
+  button, .btn {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+
+/* ランドスケープモード対応 */
+@media (max-height: 500px) and (orientation: landscape) {
+  header {
+    height: auto;
+    min-height: 48px;
+  }
+
+  .py-8 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
