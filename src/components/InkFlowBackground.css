@@ -25,45 +25,45 @@
   left: -50%;
   pointer-events: none;
   mix-blend-mode: screen;
-  opacity: 0.4;
+  opacity: 0.8;
 }
 
 /* Ink drop 1 - Cyan flowing */
 .ink-layer-1 {
   background:
-    radial-gradient(ellipse at 30% 40%, rgba(0, 184, 255, 0.6) 0%, transparent 40%),
-    radial-gradient(ellipse at 70% 60%, rgba(0, 150, 255, 0.4) 0%, transparent 35%),
-    radial-gradient(circle at 50% 80%, rgba(0, 200, 255, 0.3) 0%, transparent 25%);
-  filter: url(#ink-turbulence) blur(30px);
+    radial-gradient(ellipse at 30% 40%, rgba(0, 184, 255, 0.9) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 60%, rgba(0, 150, 255, 0.7) 0%, transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(0, 200, 255, 0.6) 0%, transparent 25%);
+  filter: url(#ink-turbulence) blur(20px);
   animation: inkFlow1 35s ease-in-out infinite;
 }
 
 /* Ink drop 2 - Green flowing */
 .ink-layer-2 {
   background:
-    radial-gradient(ellipse at 60% 30%, rgba(0, 255, 136, 0.5) 0%, transparent 38%),
-    radial-gradient(ellipse at 40% 70%, rgba(0, 230, 120, 0.4) 0%, transparent 32%),
-    radial-gradient(circle at 80% 50%, rgba(0, 255, 150, 0.3) 0%, transparent 28%);
-  filter: url(#ink-turbulence-2) blur(35px);
+    radial-gradient(ellipse at 60% 30%, rgba(0, 255, 136, 0.8) 0%, transparent 38%),
+    radial-gradient(ellipse at 40% 70%, rgba(0, 230, 120, 0.6) 0%, transparent 32%),
+    radial-gradient(circle at 80% 50%, rgba(0, 255, 150, 0.5) 0%, transparent 28%);
+  filter: url(#ink-turbulence-2) blur(25px);
   animation: inkFlow2 40s ease-in-out infinite;
 }
 
 /* Ink drop 3 - Purple flowing */
 .ink-layer-3 {
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(138, 43, 226, 0.4) 0%, transparent 35%),
-    radial-gradient(ellipse at 20% 70%, rgba(120, 60, 200, 0.3) 0%, transparent 30%),
-    radial-gradient(circle at 75% 25%, rgba(150, 50, 220, 0.25) 0%, transparent 25%);
-  filter: url(#ink-turbulence) blur(40px);
+    radial-gradient(ellipse at 50% 50%, rgba(138, 43, 226, 0.7) 0%, transparent 35%),
+    radial-gradient(ellipse at 20% 70%, rgba(120, 60, 200, 0.5) 0%, transparent 30%),
+    radial-gradient(circle at 75% 25%, rgba(150, 50, 220, 0.4) 0%, transparent 25%);
+  filter: url(#ink-turbulence) blur(30px);
   animation: inkFlow3 45s ease-in-out infinite;
 }
 
 /* Ink drop 4 - Mixed colors */
 .ink-layer-4 {
   background:
-    radial-gradient(ellipse at 45% 55%, rgba(0, 200, 255, 0.3) 0%, transparent 30%),
-    radial-gradient(ellipse at 80% 40%, rgba(0, 255, 180, 0.25) 0%, transparent 28%),
-    radial-gradient(circle at 25% 80%, rgba(100, 150, 255, 0.2) 0%, transparent 22%);
+    radial-gradient(ellipse at 45% 55%, rgba(0, 200, 255, 0.6) 0%, transparent 30%),
+    radial-gradient(ellipse at 80% 40%, rgba(0, 255, 180, 0.5) 0%, transparent 28%),
+    radial-gradient(circle at 25% 80%, rgba(100, 150, 255, 0.4) 0%, transparent 22%);
   filter: url(#ink-blur);
   animation: inkFlow4 50s ease-in-out infinite;
 }
