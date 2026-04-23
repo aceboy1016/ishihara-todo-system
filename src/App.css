@@ -31,7 +31,7 @@ body::before {
     radial-gradient(ellipse at 90% 80%, rgba(0, 255, 136, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 50%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
   animation: flowingGradient 25s ease-in-out infinite;
-  z-index: 0;
+  z-index: -3;
   pointer-events: none;
 }
 
@@ -56,7 +56,7 @@ body::before {
   width: 100vw;
   height: 100vh;
   display: block;
-  z-index: 0;
+  z-index: -2;
   pointer-events: none;
   opacity: 0.6;
 }
@@ -67,7 +67,7 @@ body::before {
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1;
+  z-index: -1;
   pointer-events: none;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
   background-size: 400% 400%;
