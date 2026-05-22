@@ -166,7 +166,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
           ) : (
             <div className="space-y-3">
               {availableTasks.map(task => {
-                const config = categoryConfig[task.category];
+                const config = (categoryConfig as Record<string, { icon: string; name: string }>)[task.category] ?? { icon: '📌', name: task.category };
                 return (
                   <div
                     key={task.id}

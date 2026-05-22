@@ -1,7 +1,7 @@
 // Task Management Types
 export interface Task {
   id: number;
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other' | 'reading';
+  category: string;
   title: string;
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
@@ -201,7 +201,7 @@ export interface TaskFilters {
 // Form Types
 export interface TaskFormData {
   title: string;
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other' | 'reading';
+  category: string;
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
   estimatedHours: number;

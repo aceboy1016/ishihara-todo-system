@@ -1,5 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { Settings2 } from 'lucide-react';
 import { Header } from './Header';
+import { TimePeriodSidebar, type TimePeriodFilter } from './TimePeriodSidebar';
 import { ProgressCard } from '../analytics/ProgressCard';
 import { AnalyticsCard } from '../analytics/AnalyticsCard';
 import { TaskCategory } from '../tasks/TaskCategory';
@@ -7,6 +9,7 @@ import { RecurringTasksPanel } from '../tasks/RecurringTasksPanel';
 import { TaskModal } from '../ui/TaskModal';
 import { TaskRolloverModal } from '../ui/TaskRolloverModal';
 import { TaskSelectModal } from '../ui/TaskSelectModal';
+import { CategoryManagerModal } from '../ui/CategoryManagerModal';
 import { ReflectionForm } from '../reflection/ReflectionForm';
 import { AIInsightPanel } from '../reflection/AIInsightPanel';
 import { LongTermGoalsPanel } from '../goals/LongTermGoalsPanel';
@@ -22,10 +25,11 @@ import type {
   WeekHistoryEntry,
   WeeklyReflectionInput,
 } from '../../types';
-import { getWeekDateRange, getCurrentWeekNumber } from '../../utils/dateUtils';
+import { getWeekDateRange, getCurrentWeekNumber, getWeekDates } from '../../utils/dateUtils';
 import { INITIAL_GOALS, generateInitialTasks } from '../../constants/categories';
 import { exportToJSON, downloadJSON } from '../../utils/exportUtils';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useCustomCategories } from '../../hooks/useCustomCategories';
 import {
   getIncompleteTasksForDate,
   rolloverIncompleteTasks,
@@ -35,6 +39,20 @@ import {
 } from '../../utils/taskRollover';
 import { useWeeklyHistory, useReflectionProfile, createHistoryEntry } from '../../hooks/useWeeklyHistory';
 import { useAIInsights } from '../../hooks/useAIInsights';
+
+const DEFAULT_CATEGORY_LIST = [
+  { id: 'note', name: 'note', icon: '📝', color: '#41C9B4' },
+  { id: 'standfm', name: 'standFM', icon: '🎙️', color: '#FF6B35' },
+  { id: 'instagram', name: 'Instagram', icon: '📷', color: '#E4405F' },
+  { id: 'youtube', name: 'YouTube', icon: '📺', color: '#FF0000' },
+  { id: 'expertise', name: '専門性開発', icon: '🎯', color: '#4ecdc4' },
+  { id: 'marketing', name: 'マーケティング', icon: '📈', color: '#45b7d1' },
+  { id: 'business', name: 'ビジネス', icon: '💼', color: '#f9ca24' },
+  { id: 'topform', name: 'TOPFORM', icon: '🏢', color: '#e74c3c' },
+  { id: 'private', name: 'プライベート', icon: '🏠', color: '#9b59b6' },
+  { id: 'other', name: 'その他', icon: '📌', color: '#7f8c8d' },
+  { id: 'reading', name: '読書', icon: '📚', color: '#6c5ce7' },
+] as const;
 
 interface DashboardProps {
   // This will be populated with hooks later
@@ -48,6 +66,12 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [currentView, setCurrentView] = useState<'dashboard' | 'analytics' | 'history'>('dashboard');
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  // 期間フィルターとカテゴリー管理
+  const [timePeriodFilter, setTimePeriodFilter] = useState<TimePeriodFilter>('all');
+  const [showCategoryManager, setShowCategoryManager] = useState(false);
+  const { customCategories, addCategory, updateCategory, deleteCategory } = useCustomCategories();
+  const allCategories = [...DEFAULT_CATEGORY_LIST, ...customCategories];
 
   // 繰り越しモーダル関連のステート
   const [showRolloverModal, setShowRolloverModal] = useState(false);
@@ -63,7 +87,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
-  const [defaultCategory, setDefaultCategory] = useState<Task['category'] | undefined>(undefined);
+  const [defaultCategory, setDefaultCategory] = useState<string | undefined>(undefined);
   const { entries, upsertEntry, getEntry } = useWeeklyHistory();
   const { profile } = useReflectionProfile();
   const { generateInsight, isGenerating, error: aiError } = useAIInsights();
@@ -449,16 +473,71 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     setDateRange(getWeekDateRange(weekNumber));
   };
 
-  const getTasksByCategory = (category: keyof CategoryGoals | 'private' | 'other' | 'reading') => {
+  const getTasksByCategory = (category: string) => {
     return tasks.filter(task => task.category === category);
   };
+
+  const filterByTimePeriod = (categoryTasks: Task[]): Task[] => {
+    if (timePeriodFilter === 'all') return categoryTasks;
+
+    const todayStr = formatDateToString(new Date());
+
+    if (timePeriodFilter === 'today') {
+      return categoryTasks.filter(t => t.scheduledDate === todayStr);
+    }
+
+    if (timePeriodFilter === 'week') {
+      const { start, end } = getWeekDates(currentWeek);
+      return categoryTasks.filter(t => {
+        if (!t.scheduledDate) return false;
+        const d = new Date(t.scheduledDate + 'T00:00:00');
+        return d >= start && d <= end;
+      });
+    }
+
+    if (timePeriodFilter === 'month') {
+      const now = new Date();
+      return categoryTasks.filter(t => {
+        if (!t.scheduledDate) return false;
+        const d = new Date(t.scheduledDate + 'T00:00:00');
+        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      });
+    }
+
+    return categoryTasks;
+  };
+
+  const getFilteredTasksByCategory = (category: string) => {
+    return filterByTimePeriod(getTasksByCategory(category));
+  };
+
+  const taskCountsByPeriod = useMemo(() => {
+    const todayStr = formatDateToString(new Date());
+    const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
+    const now = new Date();
+    const nonRecurring = tasks.filter(t => !t.isRecurring);
+    return {
+      all: nonRecurring.length,
+      today: nonRecurring.filter(t => t.scheduledDate === todayStr).length,
+      week: nonRecurring.filter(t => {
+        if (!t.scheduledDate) return false;
+        const d = new Date(t.scheduledDate + 'T00:00:00');
+        return d >= weekStart && d <= weekEnd;
+      }).length,
+      month: nonRecurring.filter(t => {
+        if (!t.scheduledDate) return false;
+        const d = new Date(t.scheduledDate + 'T00:00:00');
+        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      }).length,
+    };
+  }, [tasks, currentWeek]);
 
   const calculateCompletionRate = () => {
     if (tasks.length === 0) return 0;
     return Math.round((tasks.filter(task => task.completed).length / tasks.length) * 100);
   };
 
-  const calculateCategoryProgress = (category: keyof CategoryGoals | 'private' | 'other' | 'reading') => {
+  const calculateCategoryProgress = (category: string) => {
     const categoryTasks = getTasksByCategory(category);
     if (categoryTasks.length === 0) return 0;
     return Math.round((categoryTasks.filter(task => task.completed).length / categoryTasks.length) * 100);
@@ -651,184 +730,49 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
             {/* Task Categories */}
             <section className="space-y-6">
-              <h2 className="text-2xl font-bold text-white">タスク管理</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <TaskCategory
-                  category="note"
-                  categoryName="note"
-                  tasks={getTasksByCategory('note')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('note')}
-                  currentWeek={currentWeek}
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">タスク管理</h2>
+                <button
+                  onClick={() => setShowCategoryManager(true)}
+                  className="flex items-center gap-2 px-3 py-2 bg-slate-700/60 hover:bg-slate-700 border border-slate-600/60 rounded-lg text-sm text-slate-300 hover:text-white transition-colors"
+                >
+                  <Settings2 className="h-4 w-4" />
+                  カテゴリー管理
+                </button>
+              </div>
+              <div className="flex gap-6 items-start">
+                <TimePeriodSidebar
+                  filter={timePeriodFilter}
+                  onChange={setTimePeriodFilter}
+                  taskCounts={taskCountsByPeriod}
                 />
-                <TaskCategory
-                  category="standfm"
-                  categoryName="standFM"
-                  tasks={getTasksByCategory('standfm')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('standfm')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="instagram"
-                  categoryName="Instagram"
-                  tasks={getTasksByCategory('instagram')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('instagram')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="youtube"
-                  categoryName="YouTube"
-                  tasks={getTasksByCategory('youtube')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('youtube')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="expertise"
-                  categoryName="専門性開発"
-                  tasks={getTasksByCategory('expertise')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('expertise')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="marketing"
-                  categoryName="マーケティング"
-                  tasks={getTasksByCategory('marketing')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('marketing')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="business"
-                  categoryName="ビジネス"
-                  tasks={getTasksByCategory('business')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('business')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="topform"
-                  categoryName="TOPFORM"
-                  tasks={getTasksByCategory('topform')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('topform')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="private"
-                  categoryName="プライベート"
-                  tasks={getTasksByCategory('private')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('private')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="other"
-                  categoryName="その他"
-                  tasks={getTasksByCategory('other')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('other')}
-                  currentWeek={currentWeek}
-                />
-                <TaskCategory
-                  category="reading"
-                  categoryName="読書"
-                  tasks={getTasksByCategory('reading')}
-                  onTaskToggle={handleTaskToggle}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskAdd={(category) => {
-                    setDefaultCategory(category);
-                    setIsTaskModalOpen(true);
-                  }}
-                  onTaskEdit={handleEditTask}
-                  onTaskDelete={handleDeleteTask}
-                  onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('reading')}
-                  currentWeek={currentWeek}
-                />
+                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
+                  {allCategories.map(cat => {
+                    const filteredTasks = getFilteredTasksByCategory(cat.id);
+                    if (timePeriodFilter !== 'all' && filteredTasks.length === 0) return null;
+                    return (
+                      <TaskCategory
+                        key={cat.id}
+                        category={cat.id}
+                        categoryName={cat.name}
+                        customIcon={'icon' in cat ? cat.icon : undefined}
+                        customColor={'color' in cat ? cat.color : undefined}
+                        tasks={filteredTasks}
+                        onTaskToggle={handleTaskToggle}
+                        onTaskUpdate={handleTaskUpdate}
+                        onTaskAdd={(category) => {
+                          setDefaultCategory(category);
+                          setIsTaskModalOpen(true);
+                        }}
+                        onTaskEdit={handleEditTask}
+                        onTaskDelete={handleDeleteTask}
+                        onTaskMove={handleTaskMove}
+                        progress={calculateCategoryProgress(cat.id)}
+                        currentWeek={currentWeek}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             </section>
 
@@ -991,6 +935,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         editingTask={editingTask}
         defaultCategory={defaultCategory}
         defaultTaskData={defaultTaskData}
+        customCategories={customCategories}
       />
 
       {/* Task Rollover Modal */}
@@ -1011,6 +956,16 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         onTaskSelect={handleTaskSelect}
         tasks={tasks}
         selectedDate={selectedDateForTask}
+      />
+
+      {/* Category Manager Modal */}
+      <CategoryManagerModal
+        isOpen={showCategoryManager}
+        onClose={() => setShowCategoryManager(false)}
+        customCategories={customCategories}
+        onAdd={addCategory}
+        onUpdate={updateCategory}
+        onDelete={deleteCategory}
       />
     </div>
   );
