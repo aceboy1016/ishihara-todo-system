@@ -609,9 +609,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
       {/* Sticky filter bar — visible at all times in dashboard view */}
       {currentView === 'dashboard' && (
-        <div className="sticky top-16 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50">
+        <div className="sticky top-16 z-40 bg-[#0e0e0e] border-b border-[#1f1f1f]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-3 flex-wrap">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide shrink-0">期間</span>
+            <span className="text-xs font-semibold text-[#666] uppercase tracking-wide shrink-0">期間</span>
             {([
               { key: 'all' as const, label: '全て', count: taskCountsByPeriod.all },
               { key: 'today' as const, label: '今日', count: taskCountsByPeriod.today },
@@ -623,13 +623,13 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 onClick={() => setTimePeriodFilter(key)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                   timePeriodFilter === key
-                    ? 'bg-primary-cyan text-slate-900'
-                    : 'bg-slate-700/60 text-slate-300 hover:bg-slate-700 hover:text-white'
+                    ? 'bg-[#00b8ff] text-[#0a0a0a]'
+                    : 'bg-[#1a1a1a] text-[#999] border border-[#2a2a2a] hover:bg-[#222] hover:text-white'
                 }`}
               >
                 {label}
                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  timePeriodFilter === key ? 'bg-slate-900/30 text-slate-900' : 'bg-slate-600 text-slate-400'
+                  timePeriodFilter === key ? 'bg-[#0a0a0a]/20 text-[#0a0a0a]' : 'bg-[#252525] text-[#666]'
                 }`}>
                   {count}
                 </span>
@@ -638,7 +638,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             <div className="ml-auto">
               <button
                 onClick={() => setShowCategoryManager(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/60 hover:bg-slate-700 border border-slate-600/60 rounded-full text-sm text-slate-300 hover:text-white transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 bg-[#1a1a1a] hover:bg-[#222] border border-[#2a2a2a] rounded-full text-sm text-[#999] hover:text-white transition-colors"
               >
                 <Settings2 className="h-3.5 w-3.5" />
                 カテゴリー管理
@@ -878,7 +878,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           <div className="space-y-8">
             <h2 className="text-2xl font-bold text-white">履歴</h2>
             {entries.length === 0 ? (
-              <div className="card p-6 text-slate-400">
+              <div className="card p-6 text-[#888]">
                 まだ履歴はありません。週次リフレクションを保存するとここに表示されます。
               </div>
             ) : (
@@ -893,40 +893,40 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                           <h3 className="text-lg font-semibold text-white">
                             第{entry.weekNumber}週 {entry.dateRange}
                           </h3>
-                          <p className="text-xs text-slate-400">
+                          <p className="text-xs text-[#888]">
                             保存: {new Date(entry.createdAt).toLocaleString()}
                           </p>
                         </div>
-                        <div className="text-sm text-slate-300">
+                        <div className="text-sm text-[#ccc]">
                           完了率: <span className="text-primary-cyan font-semibold">{entry.metrics.completionRate}%</span>
                         </div>
                       </header>
 
-                      <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-200">
+                      <div className="grid md:grid-cols-2 gap-4 text-sm text-[#ddd]">
                         <div className="space-y-2">
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Wins</h4>
-                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
                             {entry.reflection.wins || '—'}
                           </p>
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Challenges</h4>
-                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
                             {entry.reflection.challenges || '—'}
                           </p>
                         </div>
                         <div className="space-y-2">
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Learnings</h4>
-                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
                             {entry.reflection.learnings || '—'}
                           </p>
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Focus Next Week</h4>
-                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
                             {entry.reflection.focusNextWeek || '—'}
                           </p>
                         </div>
                       </div>
 
                       {entry.aiInsight && (
-                        <div className="border border-primary-green/30 bg-primary-green/10 rounded-lg p-4 text-sm text-slate-100">
+                        <div className="border border-primary-green/30 bg-primary-green/10 rounded-lg p-4 text-sm text-[#f0f0f0]">
                           <div className="text-xs uppercase tracking-wide text-primary-green/80 mb-2">AI Insight</div>
                           <div className="space-y-2">
                             <p className="font-medium text-primary-cyan">{entry.aiInsight.summary}</p>

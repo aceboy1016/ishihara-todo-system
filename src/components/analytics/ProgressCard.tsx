@@ -37,7 +37,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
   };
 
   const getTrendColor = () => {
-    if (!trend) return 'text-slate-400';
+    if (!trend) return 'text-[#888]';
     if (trend > 0) return 'text-emerald-400';
     return 'text-red-400';
   };
@@ -128,7 +128,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-slate-300">
+          <h3 className="text-sm font-medium text-[#ccc]">
             {title}
           </h3>
           {trend !== undefined && (
@@ -149,19 +149,19 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
               {formatValue(current)}
             </span>
             {unit && (
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-[#888]">
                 {unit}
               </span>
             )}
           </div>
 
-          <div className="flex items-center space-x-2 text-xs text-slate-400">
+          <div className="flex items-center space-x-2 text-xs text-[#888]">
             <span>目標: {formatValue(target)}{unit}</span>
             <span>•</span>
             <span className={clsx(
               'font-medium',
               percentage >= 100 ? 'text-emerald-400' :
-              percentage >= 75 ? colorClasses.text : 'text-slate-300'
+              percentage >= 75 ? colorClasses.text : 'text-[#ccc]'
             )}>
               {percentage.toFixed(1)}%
             </span>
@@ -170,7 +170,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
 
         {/* Progress Bar */}
         <div className="space-y-2">
-          <div className="w-full bg-slate-700/50 rounded-full h-2">
+          <div className="w-full bg-[#1a1a1a] rounded-full h-2">
             <div
               className={clsx(
                 'h-full rounded-full transition-all duration-1000 ease-out',

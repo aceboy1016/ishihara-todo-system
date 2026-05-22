@@ -170,17 +170,17 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => onWeekChange(currentWeek - 1)}
-                className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
                 title="前の週"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <div className="text-sm text-slate-400 min-w-[60px] text-center">
+              <div className="text-sm text-[#888] min-w-[60px] text-center">
                 第{currentWeek}週
               </div>
               <button
                 onClick={() => onWeekChange(currentWeek + 1)}
-                className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
                 title="次の週"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -203,7 +203,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
           {/* onWeekChangeがない場合は従来通り */}
           {!onWeekChange && (
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-[#888]">
               第{currentWeek}週
             </div>
           )}
@@ -226,8 +226,8 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                   isToday
                     ? 'bg-primary-cyan/20 border-primary-cyan/50'
                     : dayTasks.length > 0
-                      ? 'bg-slate-800/70 border-slate-600/50 hover:bg-slate-700/70'
-                      : 'bg-slate-800/30 border-slate-700/30 hover:bg-slate-800/50'
+                      ? 'bg-[#131313]/70 border-[#333]/50 hover:bg-[#1e1e1e]/70'
+                      : 'bg-[#131313]/30 border-[#232323] hover:bg-[#131313]/50'
                 )}
                 onClick={() => onDateClick?.(date)}
               >
@@ -242,7 +242,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
               {/* 曜日 */}
               <div className={clsx(
                 'text-xs mb-2',
-                isToday ? 'text-primary-cyan/80' : 'text-slate-400'
+                isToday ? 'text-primary-cyan/80' : 'text-[#888]'
               )}>
                 {formatDayOfWeek(date)}
               </div>
@@ -272,7 +272,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                       e.stopPropagation();
                       onAddTaskToDate(date);
                     }}
-                    className="w-full flex items-center justify-center space-x-1 py-1 text-xs text-slate-400 hover:text-primary-cyan hover:bg-slate-700/50 rounded transition-colors"
+                    className="w-full flex items-center justify-center space-x-1 py-1 text-xs text-[#888] hover:text-primary-cyan hover:bg-[#1a1a1a] rounded transition-colors"
                     title="新規タスクを追加"
                   >
                     <Plus className="h-3 w-3" />
@@ -287,7 +287,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                       e.stopPropagation();
                       onSelectExistingTask(date);
                     }}
-                    className="w-full flex items-center justify-center space-x-1 py-1 text-xs text-slate-400 hover:text-primary-green hover:bg-slate-700/50 rounded transition-colors"
+                    className="w-full flex items-center justify-center space-x-1 py-1 text-xs text-[#888] hover:text-primary-green hover:bg-[#1a1a1a] rounded transition-colors"
                     title="既存タスクを追加"
                   >
                     <ListPlus className="h-3 w-3" />
@@ -297,7 +297,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
 
                 {/* 進捗バー */}
                 {metrics.total > 0 && (
-                  <div className="w-full bg-slate-700 rounded-full h-1 mt-1">
+                  <div className="w-full bg-[#1e1e1e] rounded-full h-1 mt-1">
                     <div
                       className="bg-green-400 h-1 rounded-full transition-all"
                       style={{
@@ -308,7 +308,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                 )}
 
                 {/* タスク数表示 */}
-                <div className="text-xs text-slate-400 text-center">
+                <div className="text-xs text-[#888] text-center">
                   {dayTasks.length > 0 ? `${metrics.completed}/${metrics.total}` : '0'}
                 </div>
               </div>
@@ -319,7 +319,7 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
       </div>
 
       {/* 凡例 */}
-      <div className="mt-4 flex items-center justify-center space-x-4 text-xs text-slate-400">
+      <div className="mt-4 flex items-center justify-center space-x-4 text-xs text-[#888]">
         <div className="flex items-center space-x-1">
           <div className="w-2 h-2 bg-red-400 rounded-full"></div>
           <span>S優先</span>

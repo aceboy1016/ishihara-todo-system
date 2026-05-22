@@ -47,13 +47,13 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
       <div className="flex items-center space-x-3 mb-6">
         <Repeat className="h-5 w-5 text-purple-400" />
         <h3 className="text-lg font-bold text-white">繰り返しタスク一覧</h3>
-        <span className="text-sm text-slate-400">({recurringTasks.length}件)</span>
+        <span className="text-sm text-[#888]">({recurringTasks.length}件)</span>
       </div>
 
       {recurringTasks.length === 0 ? (
         <div className="text-center py-12">
-          <Repeat className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-400">繰り返しタスクはありません</p>
+          <Repeat className="h-12 w-12 text-[#555] mx-auto mb-4" />
+          <p className="text-[#888]">繰り返しタスクはありません</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -62,7 +62,7 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
             return (
               <div
                 key={task.id}
-                className="p-4 bg-slate-700/30 border border-slate-600/30 rounded-lg hover:bg-slate-700/50 transition-colors"
+                className="p-4 bg-[#1e1e1e]/30 border border-[#2e2e2e] rounded-lg hover:bg-[#1a1a1a] transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
@@ -73,7 +73,7 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
 
                     <div className="flex flex-wrap items-center gap-2 text-xs">
                       {/* カテゴリ */}
-                      <span className="px-2 py-1 bg-slate-600/50 text-slate-300 rounded">
+                      <span className="px-2 py-1 bg-[#252525]/50 text-[#ccc] rounded">
                         {config.name}
                       </span>
 
@@ -105,14 +105,14 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
                     </div>
 
                     {task.notes && (
-                      <p className="text-xs text-slate-400 mt-2">{task.notes}</p>
+                      <p className="text-xs text-[#888] mt-2">{task.notes}</p>
                     )}
                   </div>
 
                   <div className="flex items-center space-x-2 ml-4">
                     <button
                       onClick={() => onTaskEdit(task)}
-                      className="p-2 hover:bg-slate-600 rounded-lg transition-colors text-slate-400 hover:text-primary-cyan"
+                      className="p-2 hover:bg-[#252525] rounded-lg transition-colors text-[#888] hover:text-primary-cyan"
                       title="編集"
                     >
                       <Edit2 className="h-4 w-4" />
@@ -123,7 +123,7 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
                           onTaskDelete(task.id);
                         }
                       }}
-                      className="p-2 hover:bg-slate-600 rounded-lg transition-colors text-slate-400 hover:text-red-400"
+                      className="p-2 hover:bg-[#252525] rounded-lg transition-colors text-[#888] hover:text-red-400"
                       title="削除"
                     >
                       <Trash2 className="h-4 w-4" />

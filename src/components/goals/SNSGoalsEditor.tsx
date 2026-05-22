@@ -76,7 +76,7 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
         <div className="flex items-center space-x-3">
           <Users className="h-6 w-6 text-cyan-400" />
           <h3 className="text-xl font-bold text-white">SNS フォロワー目標</h3>
-          <div className="text-sm text-slate-400">
+          <div className="text-sm text-[#888]">
             {lastUpdateInfo
               ? `最終更新: ${lastUpdateInfo.year}年第${lastUpdateInfo.weekNumber}週 (${lastUpdateInfo.date})`
               : '週次更新'
@@ -123,7 +123,7 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
           return (
             <div
               key={platform.key}
-              className="p-4 bg-slate-800/50 border border-slate-700/50 rounded-lg hover:bg-slate-800/70 transition-colors"
+              className="p-4 bg-[#131313]/50 border border-[#2a2a2a] rounded-lg hover:bg-[#131313]/70 transition-colors"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
@@ -148,14 +148,14 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
               <div className="space-y-3">
                 {/* Current Value */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">現在</span>
+                  <span className="text-sm text-[#888]">現在</span>
                   {isEditing ? (
                     <input
                       type="number"
                       min="0"
                       value={currentValue}
                       onChange={(e) => handleCurrentChange(platform.key, parseInt(e.target.value) || 0)}
-                      className="w-20 px-2 py-1 text-sm bg-slate-700 border border-slate-600 rounded text-white focus:border-blue-400 focus:outline-none"
+                      className="w-20 px-2 py-1 text-sm bg-[#1e1e1e] border border-[#333] rounded text-white focus:border-blue-400 focus:outline-none"
                     />
                   ) : (
                     <span className="text-white font-semibold">{currentValue}</span>
@@ -164,14 +164,14 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
 
                 {/* Target Value */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400">目標</span>
+                  <span className="text-sm text-[#888]">目標</span>
                   {isEditing ? (
                     <input
                       type="number"
                       min="0"
                       value={targetValue}
                       onChange={(e) => handleTargetChange(platform.key, parseInt(e.target.value) || 0)}
-                      className="w-20 px-2 py-1 text-sm bg-slate-700 border border-slate-600 rounded text-white focus:border-blue-400 focus:outline-none"
+                      className="w-20 px-2 py-1 text-sm bg-[#1e1e1e] border border-[#333] rounded text-white focus:border-blue-400 focus:outline-none"
                     />
                   ) : (
                     <span className="text-white font-semibold">{targetValue}</span>
@@ -181,12 +181,12 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
                 {/* Progress */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-400">進捗</span>
+                    <span className="text-sm text-[#888]">進捗</span>
                     <span className={clsx('text-sm font-semibold', platform.color)}>
                       {progress}%
                     </span>
                   </div>
-                  <div className="w-full bg-slate-700 rounded-full h-2">
+                  <div className="w-full bg-[#1e1e1e] rounded-full h-2">
                     <div
                       className={clsx(
                         'h-full rounded-full transition-all duration-500',
@@ -202,7 +202,7 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
 
                 {/* Remaining to Goal */}
                 {!isEditing && (
-                  <div className="text-xs text-slate-500">
+                  <div className="text-xs text-[#666]">
                     目標まで残り: {Math.max(0, targetValue - currentValue)}
                   </div>
                 )}

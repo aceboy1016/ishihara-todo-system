@@ -89,9 +89,9 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999]">
-      <div className="bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl mx-4 border border-slate-700 max-h-[80vh] flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+    <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-[9999]">
+      <div className="bg-[#131313] rounded-xl shadow-2xl w-full max-w-2xl mx-4 border border-[#2a2a2a] max-h-[80vh] flex flex-col">
+        <div className="flex items-center justify-between p-6 border-b border-[#2a2a2a]">
           <div className="flex items-center space-x-3">
             <Calendar className="h-5 w-5 text-primary-cyan" />
             <h2 className="text-xl font-bold text-white">
@@ -100,24 +100,24 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+            className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* 検索とフィルター */}
-        <div className="p-6 border-b border-slate-700/50">
+        <div className="p-6 border-b border-[#2a2a2a]">
           <div className="space-y-4">
             {/* 検索バー */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#888]" />
               <input
                 type="text"
                 placeholder="タスクを検索..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white placeholder-[#555] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
               />
             </div>
 
@@ -129,7 +129,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
                   'px-3 py-1 rounded-full text-xs transition-colors',
                   selectedCategory === 'all'
                     ? 'bg-primary-cyan text-white'
-                    : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                    : 'bg-[#1e1e1e] text-[#ccc] hover:bg-[#252525]'
                 )}
               >
                 すべて
@@ -142,7 +142,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
                     'px-3 py-1 rounded-full text-xs transition-colors flex items-center space-x-1',
                     selectedCategory === key
                       ? 'bg-primary-cyan text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      : 'bg-[#1e1e1e] text-[#ccc] hover:bg-[#252525]'
                   )}
                 >
                   <span>{config.icon}</span>
@@ -158,8 +158,8 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
           {availableTasks.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-4xl mb-4">📋</div>
-              <p className="text-slate-400 mb-2">利用可能なタスクがありません</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-[#888] mb-2">利用可能なタスクがありません</p>
+              <p className="text-xs text-[#666]">
                 未完了で、この日付に設定されていないタスクが表示されます
               </p>
             </div>
@@ -171,7 +171,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
                   <div
                     key={task.id}
                     onClick={() => handleTaskClick(task)}
-                    className="p-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600/30 hover:border-slate-500 rounded-lg cursor-pointer transition-all group"
+                    className="p-4 bg-[#1a1a1a] hover:bg-[#1e1e1e] border border-[#2e2e2e] hover:border-[#3e3e3e] rounded-lg cursor-pointer transition-all group"
                   >
                     <div className="flex items-start space-x-3">
                       <span className="text-lg flex-shrink-0">{config.icon}</span>
@@ -179,7 +179,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
                         <h4 className="text-white font-medium group-hover:text-primary-cyan transition-colors">
                           {task.title}
                         </h4>
-                        <div className="flex items-center space-x-3 mt-2 text-xs text-slate-400">
+                        <div className="flex items-center space-x-3 mt-2 text-xs text-[#888]">
                           <div className="flex items-center space-x-1">
                             <div className={`
                               w-2 h-2 rounded-full
@@ -206,7 +206,7 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
                           )}
                         </div>
                         {task.notes && (
-                          <p className="text-xs text-slate-500 mt-1 truncate">
+                          <p className="text-xs text-[#666] mt-1 truncate">
                             {task.notes}
                           </p>
                         )}
@@ -220,9 +220,9 @@ export const TaskSelectModal: React.FC<TaskSelectModalProps> = ({
         </div>
 
         {/* フッター */}
-        <div className="p-6 border-t border-slate-700/50">
+        <div className="p-6 border-t border-[#2a2a2a]">
           <div className="text-center">
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-[#888]">
               💡 タスクをクリックすると、{selectedDate.getMonth() + 1}/{selectedDate.getDate()}の予定に設定されます
             </p>
           </div>

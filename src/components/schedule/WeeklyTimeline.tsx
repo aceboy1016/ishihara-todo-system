@@ -55,7 +55,7 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
           <Calendar className="h-6 w-6 text-primary-cyan" />
           <h3 className="text-lg font-bold text-white">週間スケジュール</h3>
         </div>
-        <div className="text-center py-8 text-slate-400">
+        <div className="text-center py-8 text-[#888]">
           <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
           <p>この週にスケジュールされたタスクはありません</p>
           <div className="text-xs mt-2 opacity-60">
@@ -80,17 +80,17 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => onWeekChange(currentWeek - 1)}
-                className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
                 title="前の週"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <div className="text-sm text-slate-400 min-w-[60px] text-center">
+              <div className="text-sm text-[#888] min-w-[60px] text-center">
                 第{currentWeek}週
               </div>
               <button
                 onClick={() => onWeekChange(currentWeek + 1)}
-                className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
                 title="次の週"
               >
                 <ChevronRight className="h-4 w-4" />
@@ -113,7 +113,7 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
 
           {/* onWeekChangeがない場合は従来通り */}
           {!onWeekChange && (
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-[#888]">
               第{currentWeek}週 • {scheduledTasks.length}件のタスク
             </div>
           )}
@@ -133,7 +133,7 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                 'flex items-start space-x-4 p-3 rounded-lg border transition-colors',
                 isToday
                   ? 'bg-primary-cyan/10 border-primary-cyan/30'
-                  : 'bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70'
+                  : 'bg-[#131313]/50 border-[#2a2a2a] hover:bg-[#131313]/70'
               )}
             >
               {/* 日付表示 */}
@@ -146,7 +146,7 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                 </div>
                 <div className={clsx(
                   'text-xs',
-                  isToday ? 'text-primary-cyan/80' : 'text-slate-400'
+                  isToday ? 'text-primary-cyan/80' : 'text-[#888]'
                 )}>
                   {formatDayOfWeek(date)}
                 </div>
@@ -155,7 +155,7 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
               {/* タスクリスト */}
               <div className="flex-1 min-w-0">
                 {dayTasks.length === 0 ? (
-                  <div className="text-slate-500 text-sm py-2">
+                  <div className="text-[#666] text-sm py-2">
                     スケジュールなし
                   </div>
                 ) : (
@@ -218,7 +218,7 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                       e.stopPropagation();
                       onAddTaskToDate(date);
                     }}
-                    className="w-full flex items-center justify-center space-x-2 mt-2 py-2 text-xs text-slate-400 hover:text-primary-cyan hover:bg-slate-700/50 rounded transition-colors border border-dashed border-slate-600 hover:border-primary-cyan"
+                    className="w-full flex items-center justify-center space-x-2 mt-2 py-2 text-xs text-[#888] hover:text-primary-cyan hover:bg-[#1a1a1a] rounded transition-colors border border-dashed border-[#333] hover:border-primary-cyan"
                     title="タスクを追加"
                   >
                     <Plus className="h-4 w-4" />
@@ -233,23 +233,23 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
 
       {/* 統計情報 */}
       <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-        <div className="bg-slate-800/50 rounded-lg p-3">
+        <div className="bg-[#131313]/50 rounded-lg p-3">
           <div className="text-2xl font-bold text-white">
             {scheduledTasks.length}
           </div>
-          <div className="text-xs text-slate-400">総タスク</div>
+          <div className="text-xs text-[#888]">総タスク</div>
         </div>
-        <div className="bg-slate-800/50 rounded-lg p-3">
+        <div className="bg-[#131313]/50 rounded-lg p-3">
           <div className="text-2xl font-bold text-green-400">
             {scheduledTasks.filter(t => t.completed).length}
           </div>
-          <div className="text-xs text-slate-400">完了</div>
+          <div className="text-xs text-[#888]">完了</div>
         </div>
-        <div className="bg-slate-800/50 rounded-lg p-3">
+        <div className="bg-[#131313]/50 rounded-lg p-3">
           <div className="text-2xl font-bold text-orange-400">
             {scheduledTasks.reduce((sum, t) => sum + t.estimatedHours, 0)}h
           </div>
-          <div className="text-xs text-slate-400">予定時間</div>
+          <div className="text-xs text-[#888]">予定時間</div>
         </div>
       </div>
     </div>

@@ -26,16 +26,16 @@ export const TaskRolloverModal: React.FC<TaskRolloverModalProps> = ({
   if (!isOpen || incompleteTasks.length === 0) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999]">
-      <div className="bg-slate-800 rounded-xl shadow-2xl w-full max-w-md mx-4 border border-slate-700">
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+    <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-[9999]">
+      <div className="bg-[#131313] rounded-xl shadow-2xl w-full max-w-md mx-4 border border-[#2a2a2a]">
+        <div className="flex items-center justify-between p-6 border-b border-[#2a2a2a]">
           <div className="flex items-center space-x-3">
             <AlertTriangle className="h-5 w-5 text-orange-400" />
             <h2 className="text-xl font-bold text-white">未完了タスクの繰り越し</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+            className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
           >
             <X className="h-5 w-5" />
           </button>
@@ -43,13 +43,13 @@ export const TaskRolloverModal: React.FC<TaskRolloverModalProps> = ({
 
         <div className="p-6">
           <div className="mb-4">
-            <div className="flex items-center space-x-2 text-slate-300 mb-2">
+            <div className="flex items-center space-x-2 text-[#ccc] mb-2">
               <Calendar className="h-4 w-4" />
               <span className="text-sm">
                 {formatDateToString(fromDate)} から {formatDateToString(toDate)} への繰り越し
               </span>
             </div>
-            <p className="text-slate-400 text-sm">
+            <p className="text-[#888] text-sm">
               以下の未完了タスクが見つかりました。今日のタスクリストに追加しますか？
             </p>
           </div>
@@ -59,7 +59,7 @@ export const TaskRolloverModal: React.FC<TaskRolloverModalProps> = ({
             {incompleteTasks.map(task => (
               <div
                 key={task.id}
-                className="flex items-start space-x-3 p-3 bg-slate-700/50 rounded-lg border border-slate-600/30"
+                className="flex items-start space-x-3 p-3 bg-[#1a1a1a] rounded-lg border border-[#2e2e2e]"
               >
                 <div className={`
                   w-2 h-2 rounded-full mt-2 flex-shrink-0
@@ -70,7 +70,7 @@ export const TaskRolloverModal: React.FC<TaskRolloverModalProps> = ({
                   <h4 className="text-white font-medium text-sm truncate">
                     {task.title}
                   </h4>
-                  <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
+                  <div className="flex items-center space-x-2 text-xs text-[#888] mt-1">
                     <span className={`
                       px-2 py-1 rounded-full text-xs
                       ${task.priority === 'S' ? 'bg-red-500/20 text-red-300' :
@@ -95,7 +95,7 @@ export const TaskRolloverModal: React.FC<TaskRolloverModalProps> = ({
           <div className="flex space-x-3">
             <button
               onClick={onSkip}
-              className="flex-1 px-4 py-2 border border-slate-600 rounded-lg text-slate-300 hover:bg-slate-700 transition-colors text-sm"
+              className="flex-1 px-4 py-2 border border-[#333] rounded-lg text-[#ccc] hover:bg-[#1e1e1e] transition-colors text-sm"
             >
               今回はスキップ
             </button>

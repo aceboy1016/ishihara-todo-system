@@ -69,8 +69,8 @@ export const LongTermGoalsPanel: React.FC = () => {
 
     return {
       gradient: 'from-slate-500/20 to-gray-600/20',
-      border: 'border-slate-500/30',
-      accent: 'text-slate-400',
+      border: 'border-[#3e3e3e]/30',
+      accent: 'text-[#888]',
       progress: 'bg-gradient-to-r from-slate-500 to-gray-600'
     };
   };
@@ -82,7 +82,7 @@ export const LongTermGoalsPanel: React.FC = () => {
       <div className="flex items-center space-x-3">
         <Target className="h-6 w-6 text-cyan-400" />
         <h2 className="text-2xl font-bold text-white">長期目標</h2>
-        <div className="text-sm text-slate-400">
+        <div className="text-sm text-[#888]">
           戦略的ロードマップ 2025-2030
         </div>
       </div>
@@ -105,7 +105,7 @@ export const LongTermGoalsPanel: React.FC = () => {
               )}
             >
               {/* Phase Header */}
-              <div className="p-4 border-b border-slate-700/50">
+              <div className="p-4 border-b border-[#2a2a2a]">
                 <button
                   onClick={() => togglePhase(phase.id)}
                   className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
@@ -113,9 +113,9 @@ export const LongTermGoalsPanel: React.FC = () => {
                   <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-2">
                       {isExpanded ? (
-                        <ChevronDown className="h-4 w-4 text-slate-400" />
+                        <ChevronDown className="h-4 w-4 text-[#888]" />
                       ) : (
-                        <ChevronRight className="h-4 w-4 text-slate-400" />
+                        <ChevronRight className="h-4 w-4 text-[#888]" />
                       )}
                       {phase.currentPhase && (
                         <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
@@ -125,7 +125,7 @@ export const LongTermGoalsPanel: React.FC = () => {
                       <h3 className={clsx('text-lg font-bold', colorClasses.accent)}>
                         {phase.title}
                       </h3>
-                      <div className="flex items-center space-x-4 text-xs text-slate-400">
+                      <div className="flex items-center space-x-4 text-xs text-[#888]">
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
                           <span>{phase.period}</span>
@@ -150,7 +150,7 @@ export const LongTermGoalsPanel: React.FC = () => {
                           stroke="currentColor"
                           strokeWidth="3"
                           fill="transparent"
-                          className="text-slate-600"
+                          className="text-[#555]"
                         />
                         <circle
                           cx="24"
@@ -177,7 +177,7 @@ export const LongTermGoalsPanel: React.FC = () => {
 
                 {/* Progress Bar */}
                 <div className="mt-3">
-                  <div className="w-full bg-slate-700/50 rounded-full h-2">
+                  <div className="w-full bg-[#1a1a1a] rounded-full h-2">
                     <div
                       className={clsx(
                         'h-full rounded-full transition-all duration-1000 ease-out',
@@ -189,7 +189,7 @@ export const LongTermGoalsPanel: React.FC = () => {
                 </div>
 
                 {/* Phase Description */}
-                <p className="text-sm text-slate-300 mt-3">
+                <p className="text-sm text-[#ccc] mt-3">
                   {phase.description}
                 </p>
               </div>
@@ -200,7 +200,7 @@ export const LongTermGoalsPanel: React.FC = () => {
                   {phase.goals.map((goal) => (
                     <div
                       key={goal.id}
-                      className="flex items-start space-x-3 p-3 bg-slate-900/50 border border-slate-700/30 rounded-lg"
+                      className="flex items-start space-x-3 p-3 bg-[#0d0d0d] border border-[#232323] rounded-lg"
                     >
                       <button
                         onClick={() => toggleGoalAchievement(phase.id, goal.id)}
@@ -209,7 +209,7 @@ export const LongTermGoalsPanel: React.FC = () => {
                           'flex items-center justify-center mt-0.5',
                           goal.isAchieved
                             ? 'bg-emerald-500 border-emerald-500 text-white'
-                            : 'border-slate-400 hover:border-emerald-400 hover:bg-emerald-400/10'
+                            : 'border-[#444] hover:border-emerald-400 hover:bg-emerald-400/10'
                         )}
                       >
                         {goal.isAchieved ? (
@@ -234,13 +234,13 @@ export const LongTermGoalsPanel: React.FC = () => {
                               'text-xs px-2 py-1 rounded-full border',
                               colorClasses.accent,
                               colorClasses.border,
-                              'bg-slate-800/50'
+                              'bg-[#131313]/50'
                             )}>
                               {goal.target}
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className="text-xs text-[#888] mt-1">
                           {goal.description}
                         </p>
                       </div>
@@ -253,7 +253,7 @@ export const LongTermGoalsPanel: React.FC = () => {
         })}
       </div>
 
-      <div className="text-xs text-slate-500 text-center">
+      <div className="text-xs text-[#666] text-center">
         最終更新: {new Date(goals.lastUpdated).toLocaleString('ja-JP')}
       </div>
     </div>

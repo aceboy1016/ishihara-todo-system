@@ -28,7 +28,7 @@ export const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
   };
 
   const getTrendColor = () => {
-    if (!trend) return 'text-slate-400';
+    if (!trend) return 'text-[#888]';
     if (trend > 0) return 'text-emerald-400';
     return 'text-red-400';
   };
@@ -126,7 +126,7 @@ export const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <h3 className={clsx(
-              'font-medium text-slate-300',
+              'font-medium text-[#ccc]',
               sizeClasses.title
             )}>
               {title}
@@ -164,7 +164,7 @@ export const AnalyticsCard: React.FC<AnalyticsCardProps> = ({
 
           {subtitle && (
             <div className={clsx(
-              'text-slate-400 font-medium',
+              'text-[#888] font-medium',
               sizeClasses.subtitle
             )}>
               {subtitle}

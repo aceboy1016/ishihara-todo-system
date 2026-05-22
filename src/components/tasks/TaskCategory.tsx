@@ -107,8 +107,8 @@ const DEFAULT_CUSTOM_CONFIG = {
   icon: '📌',
   color: 'slate',
   gradient: 'from-slate-500/20 to-gray-600/20',
-  border: 'border-slate-500/30',
-  accent: 'text-slate-400',
+  border: 'border-[#3e3e3e]/30',
+  accent: 'text-[#888]',
 };
 
 export const TaskCategory = memo<TaskCategoryProps>(({
@@ -188,7 +188,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
         isOver && 'ring-2 ring-primary-cyan ring-opacity-50 scale-102'
       )}>
       {/* Header */}
-      <div className="p-4 border-b border-slate-700/50">
+      <div className="p-4 border-b border-[#2a2a2a]">
         <div className="flex items-center justify-between">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -196,9 +196,9 @@ export const TaskCategory = memo<TaskCategoryProps>(({
           >
             <div className="flex items-center space-x-2">
               {isCollapsed ? (
-                <ChevronRight className="h-4 w-4 text-slate-400" />
+                <ChevronRight className="h-4 w-4 text-[#888]" />
               ) : (
-                <ChevronDown className="h-4 w-4 text-slate-400" />
+                <ChevronDown className="h-4 w-4 text-[#888]" />
               )}
               <span className="text-xl">{config.icon}</span>
             </div>
@@ -206,7 +206,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
               <h3 className={clsx('text-lg font-bold', config.accent)}>
                 {categoryName}
               </h3>
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-[#888]">
                 {completedTasks}/{totalTasks} 完了
               </div>
             </div>
@@ -223,7 +223,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
                   stroke="currentColor"
                   strokeWidth="3"
                   fill="transparent"
-                  className="text-slate-600"
+                  className="text-[#555]"
                 />
                 <circle
                   cx="24"
@@ -258,7 +258,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
                   'p-2 rounded-lg border transition-colors',
                   'hover:bg-white opacity-10',
                   config.border,
-                  'text-slate-300 hover:text-white'
+                  'text-[#ccc] hover:text-white'
                 )}
                 title="タスクを追加"
               >
@@ -270,7 +270,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
 
         {/* Progress Bar */}
         <div className="mt-3">
-          <div className="w-full bg-slate-700/50 rounded-full h-2">
+          <div className="w-full bg-[#1a1a1a] rounded-full h-2">
             <div
               className={clsx(
                 'h-full rounded-full transition-all duration-1000 ease-out',
@@ -283,7 +283,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
 
         {/* Task Summary */}
         {!isCollapsed && (
-          <div className="mt-3 flex items-center space-x-4 text-xs text-slate-400">
+          <div className="mt-3 flex items-center space-x-4 text-xs text-[#888]">
             <div className="flex items-center space-x-1">
               <div className="w-2 h-2 rounded-full bg-red-500"></div>
               <span>S優先: {priorityTasks.S.length}</span>
@@ -304,7 +304,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
       {!isCollapsed && (
         <div className="p-4 space-y-3">
           {sortedTasks.length === 0 ? (
-            <div className="text-center py-8 text-slate-400">
+            <div className="text-center py-8 text-[#888]">
               <div className="text-4xl mb-2">📝</div>
               <p className="text-sm">タスクがありません</p>
               <p className="text-xs mt-1">「+」ボタンでタスクを追加しましょう</p>
@@ -314,7 +314,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
               {category === 'topform' ? (
                 // TOPFORMの場合：日付ベースでソート済みのタスクを表示
                 <>
-                  <div className="text-xs text-slate-400 mb-3 px-2">
+                  <div className="text-xs text-[#888] mb-3 px-2">
                     📅 {(() => {
                       const { start } = getWeekDates(currentWeek);
                       const startDay = start.getDate();
@@ -338,7 +338,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
                 <>
                   {/* 読書中セクション */}
                   <div className="space-y-2">
-                    <div className="text-xs text-slate-400 mb-2 px-2 flex items-center gap-1">
+                    <div className="text-xs text-[#888] mb-2 px-2 flex items-center gap-1">
                       📖 読書中
                     </div>
                     {sortedTasks.filter(task => task.readingStatus === 'reading').map(task => (
@@ -355,7 +355,7 @@ export const TaskCategory = memo<TaskCategoryProps>(({
 
                   {/* 読了セクション */}
                   <div className="space-y-2 mt-4">
-                    <div className="text-xs text-slate-400 mb-2 px-2 flex items-center gap-1">
+                    <div className="text-xs text-[#888] mb-2 px-2 flex items-center gap-1">
                       ✅ 読了
                     </div>
                     {sortedTasks.filter(task => task.readingStatus === 'completed').map(task => (
