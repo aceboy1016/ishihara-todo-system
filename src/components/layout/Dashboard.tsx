@@ -71,7 +71,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [timePeriodFilter, setTimePeriodFilter] = useState<TimePeriodFilter>('all');
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const { customCategories, addCategory, updateCategory, deleteCategory } = useCustomCategories();
-  const allCategories = [...DEFAULT_CATEGORY_LIST, ...customCategories];
+  const allCategories = useMemo(
+    () => [...DEFAULT_CATEGORY_LIST, ...customCategories],
+    [customCategories]
+  );
 
   // 繰り越しモーダル関連のステート
   const [showRolloverModal, setShowRolloverModal] = useState(false);
@@ -473,64 +476,49 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     setDateRange(getWeekDateRange(weekNumber));
   };
 
-  const getTasksByCategory = (category: string) => {
-    return tasks.filter(task => task.category === category);
-  };
-
-  const filterByTimePeriod = (categoryTasks: Task[]): Task[] => {
-    if (timePeriodFilter === 'all') return categoryTasks;
-
-    const todayStr = formatDateToString(new Date());
-
-    if (timePeriodFilter === 'today') {
-      return categoryTasks.filter(t => t.scheduledDate === todayStr);
-    }
-
-    if (timePeriodFilter === 'week') {
-      const { start, end } = getWeekDates(currentWeek);
-      return categoryTasks.filter(t => {
-        if (!t.scheduledDate) return false;
-        const d = new Date(t.scheduledDate + 'T00:00:00');
-        return d >= start && d <= end;
-      });
-    }
-
-    if (timePeriodFilter === 'month') {
-      const now = new Date();
-      return categoryTasks.filter(t => {
-        if (!t.scheduledDate) return false;
-        const d = new Date(t.scheduledDate + 'T00:00:00');
-        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-      });
-    }
-
-    return categoryTasks;
-  };
-
-  const getFilteredTasksByCategory = (category: string) => {
-    return filterByTimePeriod(getTasksByCategory(category));
-  };
-
-  const taskCountsByPeriod = useMemo(() => {
+  // 全カテゴリーのフィルタリングを1回のuseMemoで処理（毎render11回呼ぶのをやめる）
+  const { filteredTasksByCategory, taskCountsByPeriod } = useMemo(() => {
     const todayStr = formatDateToString(new Date());
     const { start: weekStart, end: weekEnd } = getWeekDates(currentWeek);
     const now = new Date();
+
+    const matchesPeriod = (t: Task): boolean => {
+      if (timePeriodFilter === 'all') return true;
+      if (!t.scheduledDate) return false;
+      if (timePeriodFilter === 'today') return t.scheduledDate === todayStr;
+      const d = new Date(t.scheduledDate + 'T00:00:00');
+      if (timePeriodFilter === 'week') return d >= weekStart && d <= weekEnd;
+      if (timePeriodFilter === 'month') return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      return true;
+    };
+
+    const map: Record<string, Task[]> = {};
+    for (const t of tasks) {
+      if (!map[t.category]) map[t.category] = [];
+      if (matchesPeriod(t)) map[t.category].push(t);
+    }
+
     const nonRecurring = tasks.filter(t => !t.isRecurring);
     return {
-      all: nonRecurring.length,
-      today: nonRecurring.filter(t => t.scheduledDate === todayStr).length,
-      week: nonRecurring.filter(t => {
-        if (!t.scheduledDate) return false;
-        const d = new Date(t.scheduledDate + 'T00:00:00');
-        return d >= weekStart && d <= weekEnd;
-      }).length,
-      month: nonRecurring.filter(t => {
-        if (!t.scheduledDate) return false;
-        const d = new Date(t.scheduledDate + 'T00:00:00');
-        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-      }).length,
+      filteredTasksByCategory: map,
+      taskCountsByPeriod: {
+        all: nonRecurring.length,
+        today: nonRecurring.filter(t => t.scheduledDate === todayStr).length,
+        week: nonRecurring.filter(t => {
+          if (!t.scheduledDate) return false;
+          const d = new Date(t.scheduledDate + 'T00:00:00');
+          return d >= weekStart && d <= weekEnd;
+        }).length,
+        month: nonRecurring.filter(t => {
+          if (!t.scheduledDate) return false;
+          const d = new Date(t.scheduledDate + 'T00:00:00');
+          return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+        }).length,
+      },
     };
-  }, [tasks, currentWeek]);
+  }, [tasks, currentWeek, timePeriodFilter]);
+
+  const getFilteredTasksByCategory = (category: string) => filteredTasksByCategory[category] ?? [];
 
   const calculateCompletionRate = () => {
     if (tasks.length === 0) return 0;
@@ -538,9 +526,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const calculateCategoryProgress = (category: string) => {
-    const categoryTasks = getTasksByCategory(category);
-    if (categoryTasks.length === 0) return 0;
-    return Math.round((categoryTasks.filter(task => task.completed).length / categoryTasks.length) * 100);
+    const all = tasks.filter(t => t.category === category);
+    if (all.length === 0) return 0;
+    return Math.round((all.filter(t => t.completed).length / all.length) * 100);
   };
 
   const handleReflectionChange = (updates: Partial<WeeklyReflectionInput>) => {

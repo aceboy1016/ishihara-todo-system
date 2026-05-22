@@ -38,13 +38,26 @@ const FluidBackground: React.FC = () => {
       document.body.appendChild(particles)
     }
 
-    // Auto-generate splats periodically
+    // Pause WebGL simulation when tab is hidden to save CPU/GPU
+    const handleVisibilityChange = () => {
+      const fluidField = (window as any).FluidField
+      if (!fluidField) return
+      if (document.hidden) {
+        fluidField.pause?.()
+      } else {
+        fluidField.resume?.()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    // Auto-generate splats periodically (reduced frequency)
     const autoSplatInterval = setInterval(() => {
+      if (document.hidden) return
       const fluidField = (window as any).FluidField
       if (fluidField && !fluidField.isPaused()) {
-        fluidField.addRandomSplats(Math.floor(Math.random() * 2) + 1)
+        fluidField.addRandomSplats(1)
       }
-    }, 8000)
+    }, 15000)
 
     return () => {
       const inlineCanvas = document.getElementById('fluid-canvas')
@@ -56,6 +69,7 @@ const FluidBackground: React.FC = () => {
         document.body.removeChild(particlesOverlay)
       }
       clearInterval(autoSplatInterval)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
 
