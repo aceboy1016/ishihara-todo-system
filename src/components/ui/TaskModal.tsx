@@ -122,12 +122,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
   const modalContent = (
     <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-[9999]">
-      <div className="bg-[#131313] rounded-xl shadow-2xl w-full max-w-md mx-4 border border-[#2a2a2a]">
-        <div className="flex items-center justify-between p-6 border-b border-[#2a2a2a]">
-          <h2 className="text-xl font-bold text-white">{title}</h2>
+      <div className="bg-[#f9fafb] rounded-xl shadow-2xl w-full max-w-md mx-4 border border-[#e5e7eb]">
+        <div className="flex items-center justify-between p-6 border-b border-[#e5e7eb]">
+          <h2 className="text-xl font-bold text-[#111827]">{title}</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
+            className="p-2 hover:bg-[#f3f4f6] rounded-lg transition-colors text-[#6b7280] hover:text-[#111827]"
           >
             <X className="h-5 w-5" />
           </button>
@@ -136,14 +136,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* タイトル */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-2">
+            <label className="block text-sm font-medium text-[#374151] mb-2">
               タスクタイトル
             </label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white placeholder-[#555] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+              className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
               placeholder="タスクを入力してください"
               required
             />
@@ -151,13 +151,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* カテゴリ */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-2">
+            <label className="block text-sm font-medium text-[#374151] mb-2">
               カテゴリ
             </label>
             <select
               value={formData.category}
               onChange={(e) => handleInputChange('category', e.target.value)}
-              className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+              className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
             >
               {allCategories.map(cat => (
                 <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -168,13 +168,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {/* 優先度とエネルギー */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-[#ccc] mb-2">
+              <label className="block text-sm font-medium text-[#374151] mb-2">
                 優先度
               </label>
               <select
                 value={formData.priority}
                 onChange={(e) => handleInputChange('priority', e.target.value as TaskFormData['priority'])}
-                className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+                className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
               >
                 <option value="S">S (最高)</option>
                 <option value="A">A (高)</option>
@@ -183,13 +183,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#ccc] mb-2">
+              <label className="block text-sm font-medium text-[#374151] mb-2">
                 エネルギー
               </label>
               <select
                 value={formData.energy}
                 onChange={(e) => handleInputChange('energy', e.target.value as TaskFormData['energy'])}
-                className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+                className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
               >
                 <option value="high">高</option>
                 <option value="medium">中</option>
@@ -200,7 +200,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* 予想時間 */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-2">
+            <label className="block text-sm font-medium text-[#374151] mb-2">
               予想時間（時間）
             </label>
             <input
@@ -210,26 +210,26 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               step="0.5"
               value={formData.estimatedHours}
               onChange={(e) => handleInputChange('estimatedHours', parseFloat(e.target.value))}
-              className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+              className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
             />
           </div>
 
           {/* スケジュール日付 */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-2">
+            <label className="block text-sm font-medium text-[#374151] mb-2">
               予定日（任意）
             </label>
             <input
               type="date"
               value={formData.scheduledDate}
               onChange={(e) => handleInputChange('scheduledDate', e.target.value)}
-              className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+              className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
             />
           </div>
 
           {/* 繰り返し設定 */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-2">
+            <label className="block text-sm font-medium text-[#374151] mb-2">
               繰り返し
             </label>
             <select
@@ -243,7 +243,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                   handleInputChange('recurringInterval', 1);
                 }
               }}
-              className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+              className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
             >
               <option value="none">📅 その日だけ</option>
               <option value="daily">🔄 毎日</option>
@@ -255,13 +255,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* メモ */}
           <div>
-            <label className="block text-sm font-medium text-[#ccc] mb-2">
+            <label className="block text-sm font-medium text-[#374151] mb-2">
               メモ（任意）
             </label>
             <textarea
               value={formData.notes}
               onChange={(e) => handleInputChange('notes', e.target.value)}
-              className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white placeholder-[#555] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent resize-none"
+              className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] placeholder-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent resize-none"
               rows={3}
               placeholder="補足情報があれば入力してください"
             />
@@ -272,13 +272,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-[#333] rounded-lg text-[#ccc] hover:bg-[#1e1e1e] transition-colors"
+              className="flex-1 px-4 py-2 border border-[#d1d5db] rounded-lg text-[#374151] hover:bg-[#f3f4f6] transition-colors"
             >
               キャンセル
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-primary-cyan hover:bg-primary-cyan/80 text-white rounded-lg transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-primary-cyan hover:bg-primary-cyan/80 text-[#111827] rounded-lg transition-colors font-medium"
             >
               追加
             </button>

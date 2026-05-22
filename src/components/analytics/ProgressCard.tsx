@@ -37,9 +37,9 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
   };
 
   const getTrendColor = () => {
-    if (!trend) return 'text-[#888]';
+    if (!trend) return 'text-[#6b7280]';
     if (trend > 0) return 'text-emerald-400';
-    return 'text-red-400';
+    return 'text-red-500';
   };
 
   const getColorClasses = () => {
@@ -98,7 +98,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
           gradient: 'from-red-500/20 to-rose-600/20',
           border: 'border-red-500/30',
           progress: 'bg-gradient-to-r from-red-500 to-rose-600',
-          text: 'text-red-400'
+          text: 'text-red-500'
         };
       case 'gray':
         return {
@@ -128,7 +128,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
       <div className="space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-[#ccc]">
+          <h3 className="text-sm font-medium text-[#374151]">
             {title}
           </h3>
           {trend !== undefined && (
@@ -149,19 +149,19 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
               {formatValue(current)}
             </span>
             {unit && (
-              <span className="text-sm text-[#888]">
+              <span className="text-sm text-[#6b7280]">
                 {unit}
               </span>
             )}
           </div>
 
-          <div className="flex items-center space-x-2 text-xs text-[#888]">
+          <div className="flex items-center space-x-2 text-xs text-[#6b7280]">
             <span>目標: {formatValue(target)}{unit}</span>
             <span>•</span>
             <span className={clsx(
               'font-medium',
               percentage >= 100 ? 'text-emerald-400' :
-              percentage >= 75 ? colorClasses.text : 'text-[#ccc]'
+              percentage >= 75 ? colorClasses.text : 'text-[#374151]'
             )}>
               {percentage.toFixed(1)}%
             </span>
@@ -170,7 +170,7 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
 
         {/* Progress Bar */}
         <div className="space-y-2">
-          <div className="w-full bg-[#1a1a1a] rounded-full h-2">
+          <div className="w-full bg-[#f3f4f6] rounded-full h-2">
             <div
               className={clsx(
                 'h-full rounded-full transition-all duration-1000 ease-out',

@@ -609,9 +609,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
       {/* Sticky filter bar — visible at all times in dashboard view */}
       {currentView === 'dashboard' && (
-        <div className="sticky top-16 z-40 bg-[#0e0e0e] border-b border-[#1f1f1f]">
+        <div className="sticky top-16 z-40 bg-white border-b border-[#e5e7eb]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-3 flex-wrap">
-            <span className="text-xs font-semibold text-[#666] uppercase tracking-wide shrink-0">期間</span>
+            <span className="text-xs font-semibold text-[#9ca3af] uppercase tracking-wide shrink-0">期間</span>
             {([
               { key: 'all' as const, label: '全て', count: taskCountsByPeriod.all },
               { key: 'today' as const, label: '今日', count: taskCountsByPeriod.today },
@@ -623,13 +623,13 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 onClick={() => setTimePeriodFilter(key)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                   timePeriodFilter === key
-                    ? 'bg-[#00b8ff] text-[#0a0a0a]'
-                    : 'bg-[#1a1a1a] text-[#999] border border-[#2a2a2a] hover:bg-[#222] hover:text-white'
+                    ? 'bg-[#0ea5e9] text-white'
+                    : 'bg-[#f3f4f6] text-[#6b7280] border border-[#e5e7eb] hover:bg-[#e5e7eb] hover:text-[#111827]'
                 }`}
               >
                 {label}
                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  timePeriodFilter === key ? 'bg-[#0a0a0a]/20 text-[#0a0a0a]' : 'bg-[#252525] text-[#666]'
+                  timePeriodFilter === key ? 'bg-white/40 text-white' : 'bg-[#e5e7eb] text-[#9ca3af]'
                 }`}>
                   {count}
                 </span>
@@ -638,7 +638,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             <div className="ml-auto">
               <button
                 onClick={() => setShowCategoryManager(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-[#1a1a1a] hover:bg-[#222] border border-[#2a2a2a] rounded-full text-sm text-[#999] hover:text-white transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 bg-[#f3f4f6] hover:bg-[#e5e7eb] border border-[#e5e7eb] rounded-full text-sm text-[#6b7280] hover:text-[#111827] transition-colors"
               >
                 <Settings2 className="h-3.5 w-3.5" />
                 カテゴリー管理
@@ -653,7 +653,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           <div className="space-y-8">
             {/* Progress Overview */}
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-white">進捗概要</h2>
+              <h2 className="text-2xl font-bold text-[#111827]">進捗概要</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <ProgressCard
                   title="全体進捗"
@@ -736,7 +736,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
             {/* Weekly Schedule */}
             <section className="space-y-6">
-              <h2 className="text-2xl font-bold text-white">週間スケジュール</h2>
+              <h2 className="text-2xl font-bold text-[#111827]">週間スケジュール</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <WeeklyTimeline
                   tasks={tasks}
@@ -760,7 +760,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             {/* Task Categories */}
             <section className="space-y-6">
               <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-bold text-white">タスク管理</h2>
+                <h2 className="text-2xl font-bold text-[#111827]">タスク管理</h2>
                 {timePeriodFilter !== 'all' && (
                   <span className="px-2.5 py-1 bg-primary-cyan/20 text-primary-cyan text-sm rounded-full border border-primary-cyan/30">
                     {{ today: '今日', week: '今週', month: '今月' }[timePeriodFilter]}フィルター中
@@ -844,7 +844,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
         {currentView === 'analytics' && (
           <div className="space-y-8">
-            <h2 className="text-2xl font-bold text-white">分析ダッシュボード</h2>
+            <h2 className="text-2xl font-bold text-[#111827]">分析ダッシュボード</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <AnalyticsCard
                 title="学習効率"
@@ -876,9 +876,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
         {currentView === 'history' && (
           <div className="space-y-8">
-            <h2 className="text-2xl font-bold text-white">履歴</h2>
+            <h2 className="text-2xl font-bold text-[#111827]">履歴</h2>
             {entries.length === 0 ? (
-              <div className="card p-6 text-[#888]">
+              <div className="card p-6 text-[#6b7280]">
                 まだ履歴はありません。週次リフレクションを保存するとここに表示されます。
               </div>
             ) : (
@@ -890,43 +890,43 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                     <div key={entry.id} className="card card-hover p-5 space-y-4">
                       <header className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-[#111827]">
                             第{entry.weekNumber}週 {entry.dateRange}
                           </h3>
-                          <p className="text-xs text-[#888]">
+                          <p className="text-xs text-[#6b7280]">
                             保存: {new Date(entry.createdAt).toLocaleString()}
                           </p>
                         </div>
-                        <div className="text-sm text-[#ccc]">
+                        <div className="text-sm text-[#374151]">
                           完了率: <span className="text-primary-cyan font-semibold">{entry.metrics.completionRate}%</span>
                         </div>
                       </header>
 
-                      <div className="grid md:grid-cols-2 gap-4 text-sm text-[#ddd]">
+                      <div className="grid md:grid-cols-2 gap-4 text-sm text-[#374151]">
                         <div className="space-y-2">
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Wins</h4>
-                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#f9fafb] border border-[#e5e7eb] rounded-lg p-3">
                             {entry.reflection.wins || '—'}
                           </p>
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Challenges</h4>
-                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#f9fafb] border border-[#e5e7eb] rounded-lg p-3">
                             {entry.reflection.challenges || '—'}
                           </p>
                         </div>
                         <div className="space-y-2">
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Learnings</h4>
-                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#f9fafb] border border-[#e5e7eb] rounded-lg p-3">
                             {entry.reflection.learnings || '—'}
                           </p>
                           <h4 className="text-xs font-semibold uppercase text-primary-cyan">Focus Next Week</h4>
-                          <p className="leading-relaxed bg-[#141414] border border-[#252525] rounded-lg p-3">
+                          <p className="leading-relaxed bg-[#f9fafb] border border-[#e5e7eb] rounded-lg p-3">
                             {entry.reflection.focusNextWeek || '—'}
                           </p>
                         </div>
                       </div>
 
                       {entry.aiInsight && (
-                        <div className="border border-primary-green/30 bg-primary-green/10 rounded-lg p-4 text-sm text-[#f0f0f0]">
+                        <div className="border border-primary-green/30 bg-primary-green/10 rounded-lg p-4 text-sm text-[#111827]">
                           <div className="text-xs uppercase tracking-wide text-primary-green/80 mb-2">AI Insight</div>
                           <div className="space-y-2">
                             <p className="font-medium text-primary-cyan">{entry.aiInsight.summary}</p>

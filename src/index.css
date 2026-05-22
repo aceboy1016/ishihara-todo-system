@@ -19,86 +19,49 @@
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
-    background-color: #0a0a0a;
-    color: #f0f0f0;
+    background-color: #f4f5f7;
+    color: #111827;
   }
 
-  #root {
-    min-height: 100vh;
-  }
+  #root { min-height: 100vh; }
 }
 
 @layer components {
   .card {
-    @apply bg-[#111111] border border-[#232323] rounded-xl shadow-lg;
+    @apply bg-white border border-[#e5e7eb] rounded-xl;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     position: relative;
   }
 
   .card-hover {
-    @apply transition-all duration-200 hover:border-[#333333];
+    @apply transition-all duration-200 hover:border-[#d1d5db];
   }
 
   .card-hover:hover {
-    box-shadow: 0 0 0 1px #333333, 0 8px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
   }
 
-  .gradient-text {
-    color: #00b8ff;
-  }
+  .gradient-text { color: #0ea5e9; }
 
-  .priority-s {
-    @apply bg-red-500/10 border-red-500/30 text-red-400;
-  }
+  .priority-s { @apply bg-red-50 border-red-300 text-red-600; }
+  .priority-a { @apply bg-amber-50 border-amber-300 text-amber-700; }
+  .priority-b { @apply bg-green-50 border-green-300 text-green-700; }
 
-  .priority-a {
-    @apply bg-amber-500/10 border-amber-500/30 text-amber-400;
-  }
+  .energy-high   { @apply bg-green-50 border-green-300 text-green-700; }
+  .energy-medium { @apply bg-amber-50 border-amber-300 text-amber-700; }
+  .energy-low    { @apply bg-red-50 border-red-300 text-red-600; }
 
-  .priority-b {
-    @apply bg-green-500/10 border-green-500/30 text-green-400;
-  }
-
-  .energy-high {
-    @apply bg-emerald-500/10 border-emerald-500/30 text-emerald-400;
-  }
-
-  .energy-medium {
-    @apply bg-amber-500/10 border-amber-500/30 text-amber-400;
-  }
-
-  .energy-low {
-    @apply bg-red-500/10 border-red-500/30 text-red-400;
-  }
-
-  .category-sns {
-    @apply bg-pink-500/10 border-pink-500/30 text-pink-400;
-  }
-
-  .category-expertise {
-    @apply bg-teal-500/10 border-teal-500/30 text-teal-400;
-  }
-
-  .category-marketing {
-    @apply bg-blue-500/10 border-blue-500/30 text-blue-400;
-  }
-
-  .category-business {
-    @apply bg-yellow-500/10 border-yellow-500/30 text-yellow-400;
-  }
-
-  .category-topform {
-    @apply bg-red-500/10 border-red-500/30 text-red-400;
-  }
+  .category-sns       { @apply bg-fuchsia-50 border-fuchsia-300 text-fuchsia-700; }
+  .category-expertise { @apply bg-teal-50 border-teal-300 text-teal-700; }
+  .category-marketing { @apply bg-blue-50 border-blue-300 text-blue-700; }
+  .category-business  { @apply bg-yellow-50 border-yellow-300 text-yellow-700; }
+  .category-topform   { @apply bg-red-50 border-red-300 text-red-600; }
 }
 
 @layer utilities {
-  .glow {
-    filter: drop-shadow(0 0 8px currentColor);
-  }
+  .glow { filter: drop-shadow(0 0 6px currentColor); }
 
-  .task-complete {
-    animation: checkmark-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  }
+  .task-complete { animation: checkmark-bounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
 
   @keyframes checkmark-bounce {
     0%   { transform: scale(0); }
@@ -113,7 +76,7 @@
 
   .task-drag:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   }
 
   .task-drag:active {
@@ -122,22 +85,18 @@
   }
 
   .drop-zone-active {
-    border: 2px dashed rgba(0, 184, 255, 0.5) !important;
-    background: rgba(0, 184, 255, 0.04) !important;
+    border: 2px dashed #0ea5e9 !important;
+    background: rgba(14, 165, 233, 0.04) !important;
   }
 
-  .fade-in-up {
-    animation: fadeInUp 0.25s ease-out;
-  }
+  .fade-in-up { animation: fadeInUp 0.25s ease-out; }
 
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  .scale-in {
-    animation: scaleIn 0.2s ease-out;
-  }
+  .scale-in { animation: scaleIn 0.2s ease-out; }
 
   @keyframes scaleIn {
     from { opacity: 0; transform: scale(0.94); }
@@ -154,6 +113,6 @@
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #2e2e2e; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #404040; }
+::-webkit-scrollbar-track { background: #f4f5f7; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }

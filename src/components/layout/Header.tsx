@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
   onWeekChange
 }) => {
   return (
-    <header className="bg-[#0e0e0e] border-b border-[#1f1f1f] sticky top-0 z-50">
+    <header className="bg-white border-b border-[#e5e7eb] sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Title */}
@@ -35,11 +35,11 @@ export const Header: React.FC<HeaderProps> = ({
               </h1>
             </div>
 
-            <div className="hidden md:flex items-center space-x-4 text-sm text-[#888]">
-              <div className="flex items-center space-x-2 bg-[#1a1a1a] rounded-lg px-3 py-1 border border-[#2a2a2a]">
+            <div className="hidden md:flex items-center space-x-4 text-sm text-[#6b7280]">
+              <div className="flex items-center space-x-2 bg-[#f3f4f6] rounded-lg px-3 py-1 border border-[#e5e7eb]">
                 <button
                   onClick={() => onWeekChange(currentWeek - 1)}
-                  className="hover:text-white transition-colors p-1 hover:bg-[#2a2a2a] rounded"
+                  className="hover:text-[#111827] transition-colors p-1 hover:bg-[#e5e7eb] rounded"
                   disabled={currentWeek <= 1}
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -50,14 +50,14 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
                 <button
                   onClick={() => onWeekChange(currentWeek + 1)}
-                  className="hover:text-white transition-colors p-1 hover:bg-[#2a2a2a] rounded"
+                  className="hover:text-[#111827] transition-colors p-1 hover:bg-[#e5e7eb] rounded"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
-              <div className="w-px h-4 bg-[#2e2e2e]"></div>
+              <div className="w-px h-4 bg-[#e5e7eb]"></div>
               <span>{dateRange}</span>
-              <div className="w-px h-4 bg-[#2e2e2e]"></div>
+              <div className="w-px h-4 bg-[#e5e7eb]"></div>
               <div className="flex items-center space-x-1">
                 <div className="w-2 h-2 rounded-full bg-primary-green"></div>
                 <span>Phase {phase}</span>
@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 currentView === 'dashboard'
                   ? 'bg-primary-cyan/20 text-primary-cyan border border-primary-cyan/30'
-                  : 'text-[#999] hover:text-white hover:bg-[#1e1e1e]'
+                  : 'text-[#6b7280] hover:text-[#111827] hover:bg-[#f3f4f6]'
               }`}
             >
               <div className="flex items-center space-x-2">
@@ -86,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 currentView === 'analytics'
                   ? 'bg-primary-green/20 text-primary-green border border-primary-green/30'
-                  : 'text-[#999] hover:text-white hover:bg-[#1e1e1e]'
+                  : 'text-[#6b7280] hover:text-[#111827] hover:bg-[#f3f4f6]'
               }`}
             >
               <div className="flex items-center space-x-2">
@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 currentView === 'history'
                   ? 'bg-primary-green/20 text-primary-green border border-primary-green/30'
-                  : 'text-[#999] hover:text-white hover:bg-[#1e1e1e]'
+                  : 'text-[#6b7280] hover:text-[#111827] hover:bg-[#f3f4f6]'
               }`}
             >
               <div className="flex items-center space-x-2">
@@ -109,13 +109,13 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </button>
 
-            <div className="w-px h-8 bg-[#2e2e2e] mx-2"></div>
+            <div className="w-px h-8 bg-[#e5e7eb] mx-2"></div>
 
             {/* Action Buttons */}
             <div className="flex items-center space-x-1">
               <button
                 onClick={onImport}
-                className="p-2 rounded-lg text-[#999] hover:text-white hover:bg-[#1e1e1e] transition-colors"
+                className="p-2 rounded-lg text-[#6b7280] hover:text-[#111827] hover:bg-[#f3f4f6] transition-colors"
                 title="データインポート"
               >
                 <Upload className="h-4 w-4" />
@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <button
                 onClick={onExport}
-                className="p-2 rounded-lg text-[#999] hover:text-white hover:bg-[#1e1e1e] transition-colors"
+                className="p-2 rounded-lg text-[#6b7280] hover:text-[#111827] hover:bg-[#f3f4f6] transition-colors"
                 title="データエクスポート"
               >
                 <Download className="h-4 w-4" />
@@ -155,14 +155,14 @@ export const Header: React.FC<HeaderProps> = ({
                     window.location.href = window.location.href;
                   }
                 }}
-                className="p-2 rounded-lg text-red-400 hover:text-white hover:bg-red-700/50 transition-colors"
+                className="p-2 rounded-lg text-red-500 hover:text-[#111827] hover:bg-red-50 transition-colors"
                 title="データクリア"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
 
               <button
-                className="p-2 rounded-lg text-[#999] hover:text-white hover:bg-[#1e1e1e] transition-colors"
+                className="p-2 rounded-lg text-[#6b7280] hover:text-[#111827] hover:bg-[#f3f4f6] transition-colors"
                 title="設定"
               >
                 <Settings className="h-4 w-4" />
@@ -172,7 +172,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Mobile Info Bar */}
-        <div className="md:hidden flex items-center justify-between py-2 text-xs text-[#888]">
+        <div className="md:hidden flex items-center justify-between py-2 text-xs text-[#6b7280]">
           <div className="flex items-center space-x-2">
             <Calendar className="h-3 w-3" />
             <span>第{currentWeek}週 • {dateRange}</span>

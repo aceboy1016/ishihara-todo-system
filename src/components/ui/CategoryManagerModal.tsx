@@ -81,12 +81,12 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
 
   const modalContent = (
     <div className="fixed inset-0 bg-black/50  flex items-center justify-center z-[9999]">
-      <div className="bg-[#131313] rounded-xl shadow-2xl w-full max-w-lg mx-4 border border-[#2a2a2a] max-h-[85vh] flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b border-[#2a2a2a] shrink-0">
-          <h2 className="text-xl font-bold text-white">カテゴリー管理</h2>
+      <div className="bg-[#f9fafb] rounded-xl shadow-2xl w-full max-w-lg mx-4 border border-[#e5e7eb] max-h-[85vh] flex flex-col">
+        <div className="flex items-center justify-between p-6 border-b border-[#e5e7eb] shrink-0">
+          <h2 className="text-xl font-bold text-[#111827]">カテゴリー管理</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-[#1e1e1e] rounded-lg transition-colors text-[#888] hover:text-white"
+            className="p-2 hover:bg-[#f3f4f6] rounded-lg transition-colors text-[#6b7280] hover:text-[#111827]"
           >
             <X className="h-5 w-5" />
           </button>
@@ -95,14 +95,14 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
         <div className="overflow-y-auto flex-1 p-6 space-y-6">
           {/* Default categories (read-only) */}
           <div>
-            <h3 className="text-xs font-semibold text-[#888] uppercase tracking-wide mb-3">
+            <h3 className="text-xs font-semibold text-[#6b7280] uppercase tracking-wide mb-3">
               デフォルトカテゴリー
             </h3>
             <div className="grid grid-cols-2 gap-2">
               {DEFAULT_CATEGORIES.map(cat => (
                 <div
                   key={cat.id}
-                  className="flex items-center gap-2 bg-[#1a1a1a] rounded-lg px-3 py-2 text-sm text-[#ccc]"
+                  className="flex items-center gap-2 bg-[#f3f4f6] rounded-lg px-3 py-2 text-sm text-[#374151]"
                 >
                   <span>{cat.icon}</span>
                   <span>{cat.name}</span>
@@ -114,7 +114,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
           {/* Custom categories */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-semibold text-[#888] uppercase tracking-wide">
+              <h3 className="text-xs font-semibold text-[#6b7280] uppercase tracking-wide">
                 カスタムカテゴリー
               </h3>
               {mode === 'list' && (
@@ -130,24 +130,24 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
 
             {/* Add / Edit Form */}
             {(mode === 'add' || mode === 'edit') && (
-              <div className="bg-[#1a1a1a] rounded-xl p-4 space-y-4 mb-4 border border-[#333]">
-                <h4 className="text-sm font-medium text-white">
+              <div className="bg-[#f3f4f6] rounded-xl p-4 space-y-4 mb-4 border border-[#d1d5db]">
+                <h4 className="text-sm font-medium text-[#111827]">
                   {mode === 'add' ? '新しいカテゴリー' : 'カテゴリーを編集'}
                 </h4>
 
                 <div>
-                  <label className="block text-xs text-[#888] mb-1">名前</label>
+                  <label className="block text-xs text-[#6b7280] mb-1">名前</label>
                   <input
                     type="text"
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                     placeholder="カテゴリー名"
-                    className="w-full px-3 py-2 bg-[#1e1e1e] border border-[#333] rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-cyan"
+                    className="w-full px-3 py-2 bg-[#f3f4f6] border border-[#d1d5db] rounded-lg text-[#111827] text-sm focus:outline-none focus:ring-2 focus:ring-primary-cyan"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs text-[#888] mb-2">アイコン</label>
+                  <label className="block text-xs text-[#6b7280] mb-2">アイコン</label>
                   <div className="flex flex-wrap gap-2">
                     {ICON_OPTIONS.map(icon => (
                       <button
@@ -156,7 +156,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                         className={`w-9 h-9 rounded-lg text-lg flex items-center justify-center transition-all ${
                           form.icon === icon
                             ? 'bg-primary-cyan/30 ring-2 ring-primary-cyan'
-                            : 'bg-[#1e1e1e] hover:bg-[#252525]'
+                            : 'bg-[#f3f4f6] hover:bg-[#e5e7eb]'
                         }`}
                       >
                         {icon}
@@ -166,7 +166,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-[#888] mb-2">カラー</label>
+                  <label className="block text-xs text-[#6b7280] mb-2">カラー</label>
                   <div className="flex flex-wrap gap-2">
                     {COLOR_OPTIONS.map(color => (
                       <button
@@ -182,7 +182,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                     ))}
                   </div>
                   {/* Preview */}
-                  <div className="mt-2 flex items-center gap-2 text-sm text-[#ccc]">
+                  <div className="mt-2 flex items-center gap-2 text-sm text-[#374151]">
                     <span className="text-base">{form.icon}</span>
                     <span style={{ color: form.color }}>{form.name || 'カテゴリー名'}</span>
                   </div>
@@ -191,14 +191,14 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                 <div className="flex gap-2">
                   <button
                     onClick={resetForm}
-                    className="flex-1 px-4 py-2 border border-[#333] rounded-lg text-[#ccc] hover:bg-[#1e1e1e] text-sm transition-colors"
+                    className="flex-1 px-4 py-2 border border-[#d1d5db] rounded-lg text-[#374151] hover:bg-[#f3f4f6] text-sm transition-colors"
                   >
                     キャンセル
                   </button>
                   <button
                     onClick={handleSubmit}
                     disabled={!form.name.trim()}
-                    className="flex-1 px-4 py-2 bg-primary-cyan hover:bg-primary-cyan/80 text-white rounded-lg text-sm transition-colors disabled:opacity-40"
+                    className="flex-1 px-4 py-2 bg-primary-cyan hover:bg-primary-cyan/80 text-[#111827] rounded-lg text-sm transition-colors disabled:opacity-40"
                   >
                     {mode === 'add' ? '追加' : '保存'}
                   </button>
@@ -207,7 +207,7 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
             )}
 
             {customCategories.length === 0 && mode === 'list' ? (
-              <p className="text-sm text-[#666] py-4 text-center">
+              <p className="text-sm text-[#9ca3af] py-4 text-center">
                 カスタムカテゴリーはまだありません
               </p>
             ) : (
@@ -215,10 +215,10 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                 {customCategories.map(cat => (
                   <div
                     key={cat.id}
-                    className="flex items-center gap-3 bg-[#1a1a1a] rounded-lg px-3 py-2.5"
+                    className="flex items-center gap-3 bg-[#f3f4f6] rounded-lg px-3 py-2.5"
                   >
                     <span className="text-lg">{cat.icon}</span>
-                    <span className="text-sm text-white font-medium flex-1">{cat.name}</span>
+                    <span className="text-sm text-[#111827] font-medium flex-1">{cat.name}</span>
                     <div
                       className="w-4 h-4 rounded-full shrink-0"
                       style={{ backgroundColor: cat.color }}
@@ -226,13 +226,13 @@ export const CategoryManagerModal: React.FC<CategoryManagerModalProps> = ({
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleEdit(cat)}
-                        className="p-1.5 hover:bg-[#252525] rounded-lg text-[#888] hover:text-white transition-colors"
+                        className="p-1.5 hover:bg-[#e5e7eb] rounded-lg text-[#6b7280] hover:text-[#111827] transition-colors"
                       >
                         <Edit2 className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => onDelete(cat.id)}
-                        className="p-1.5 hover:bg-red-500/20 rounded-lg text-[#888] hover:text-red-400 transition-colors"
+                        className="p-1.5 hover:bg-red-500/20 rounded-lg text-[#6b7280] hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>

@@ -19,7 +19,7 @@ const platforms: PlatformData[] = [
   { key: 'note', name: 'note', icon: '📝', color: 'text-teal-400' },
   { key: 'standfm', name: 'standFM', icon: '🎙️', color: 'text-orange-400' },
   { key: 'instagram', name: 'Instagram', icon: '📷', color: 'text-pink-400' },
-  { key: 'youtube', name: 'YouTube', icon: '📺', color: 'text-red-400' }
+  { key: 'youtube', name: 'YouTube', icon: '📺', color: 'text-red-500' }
 ];
 
 export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
@@ -75,8 +75,8 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <Users className="h-6 w-6 text-cyan-400" />
-          <h3 className="text-xl font-bold text-white">SNS フォロワー目標</h3>
-          <div className="text-sm text-[#888]">
+          <h3 className="text-xl font-bold text-[#111827]">SNS フォロワー目標</h3>
+          <div className="text-sm text-[#6b7280]">
             {lastUpdateInfo
               ? `最終更新: ${lastUpdateInfo.year}年第${lastUpdateInfo.weekNumber}週 (${lastUpdateInfo.date})`
               : '週次更新'
@@ -103,7 +103,7 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
             </button>
             <button
               onClick={handleCancel}
-              className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600/30 transition-colors"
+              className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-red-600/20 border border-red-500/30 text-red-500 hover:bg-red-600/30 transition-colors"
             >
               <X className="h-4 w-4" />
               <span>キャンセル</span>
@@ -123,7 +123,7 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
           return (
             <div
               key={platform.key}
-              className="p-4 bg-[#131313]/50 border border-[#2a2a2a] rounded-lg hover:bg-[#131313]/70 transition-colors"
+              className="p-4 bg-[#f9fafb]/50 border border-[#e5e7eb] rounded-lg hover:bg-white transition-colors"
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2">
@@ -137,7 +137,7 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
                     'flex items-center space-x-1 text-xs px-2 py-1 rounded-full',
                     growth >= 0
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                      : 'bg-red-500/20 text-red-500 border border-red-500/30'
                   )}>
                     <TrendingUp className={clsx('h-3 w-3', growth < 0 && 'rotate-180')} />
                     <span>{growth >= 0 ? '+' : ''}{growth}</span>
@@ -148,45 +148,45 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
               <div className="space-y-3">
                 {/* Current Value */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#888]">現在</span>
+                  <span className="text-sm text-[#6b7280]">現在</span>
                   {isEditing ? (
                     <input
                       type="number"
                       min="0"
                       value={currentValue}
                       onChange={(e) => handleCurrentChange(platform.key, parseInt(e.target.value) || 0)}
-                      className="w-20 px-2 py-1 text-sm bg-[#1e1e1e] border border-[#333] rounded text-white focus:border-blue-400 focus:outline-none"
+                      className="w-20 px-2 py-1 text-sm bg-[#f3f4f6] border border-[#d1d5db] rounded text-[#111827] focus:border-blue-400 focus:outline-none"
                     />
                   ) : (
-                    <span className="text-white font-semibold">{currentValue}</span>
+                    <span className="text-[#111827] font-semibold">{currentValue}</span>
                   )}
                 </div>
 
                 {/* Target Value */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#888]">目標</span>
+                  <span className="text-sm text-[#6b7280]">目標</span>
                   {isEditing ? (
                     <input
                       type="number"
                       min="0"
                       value={targetValue}
                       onChange={(e) => handleTargetChange(platform.key, parseInt(e.target.value) || 0)}
-                      className="w-20 px-2 py-1 text-sm bg-[#1e1e1e] border border-[#333] rounded text-white focus:border-blue-400 focus:outline-none"
+                      className="w-20 px-2 py-1 text-sm bg-[#f3f4f6] border border-[#d1d5db] rounded text-[#111827] focus:border-blue-400 focus:outline-none"
                     />
                   ) : (
-                    <span className="text-white font-semibold">{targetValue}</span>
+                    <span className="text-[#111827] font-semibold">{targetValue}</span>
                   )}
                 </div>
 
                 {/* Progress */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-[#888]">進捗</span>
+                    <span className="text-sm text-[#6b7280]">進捗</span>
                     <span className={clsx('text-sm font-semibold', platform.color)}>
                       {progress}%
                     </span>
                   </div>
-                  <div className="w-full bg-[#1e1e1e] rounded-full h-2">
+                  <div className="w-full bg-[#f3f4f6] rounded-full h-2">
                     <div
                       className={clsx(
                         'h-full rounded-full transition-all duration-500',
@@ -202,7 +202,7 @@ export const SNSGoalsEditor: React.FC<SNSGoalsEditorProps> = () => {
 
                 {/* Remaining to Goal */}
                 {!isEditing && (
-                  <div className="text-xs text-[#666]">
+                  <div className="text-xs text-[#9ca3af]">
                     目標まで残り: {Math.max(0, targetValue - currentValue)}
                   </div>
                 )}

@@ -36,7 +36,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         return {
           bg: 'bg-red-500/10',
           border: 'border-red-500/30',
-          text: 'text-red-400',
+          text: 'text-red-500',
           label: '最重要'
         };
       case 'A':
@@ -55,9 +55,9 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         };
       default:
         return {
-          bg: 'bg-[#1a1a1a]',
-          border: 'border-[#3e3e3e]/30',
-          text: 'text-[#888]',
+          bg: 'bg-[#f3f4f6]',
+          border: 'border-[#9ca3af]/30',
+          text: 'text-[#6b7280]',
           label: '不明'
         };
     }
@@ -91,9 +91,9 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         };
       default:
         return {
-          bg: 'bg-[#1a1a1a]',
-          border: 'border-[#3e3e3e]/30',
-          text: 'text-[#888]',
+          bg: 'bg-[#f3f4f6]',
+          border: 'border-[#9ca3af]/30',
+          text: 'text-[#6b7280]',
           icon: <Clock className="h-3 w-3" />,
           label: '不明'
         };
@@ -118,8 +118,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       ref={itemRef}
       className={clsx(
         'group relative',
-        'bg-[#131313]/50 border border-[#2a2a2a] rounded-lg',
-        'hover:bg-[#131313]/70 hover:border-[#333]/50',
+        'bg-[#f9fafb]/50 border border-[#e5e7eb] rounded-lg',
+        'hover:bg-white hover:border-[#d1d5db]/50',
         'transition-all duration-200',
         'cursor-move',
         task.completed && 'opacity-75',
@@ -129,7 +129,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         <div className="flex items-start space-x-3">
           {/* Drag Handle */}
           <div className="flex-shrink-0 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <GripVertical className="h-4 w-4 text-[#888]" />
+            <GripVertical className="h-4 w-4 text-[#6b7280]" />
           </div>
 
           {/* Checkbox */}
@@ -139,8 +139,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({
               'flex-shrink-0 w-5 h-5 rounded border-2 transition-all duration-200',
               'flex items-center justify-center',
               task.completed
-                ? 'bg-emerald-500 border-emerald-500 text-white'
-                : 'border-[#444] hover:border-emerald-400 hover:bg-emerald-400/10'
+                ? 'bg-emerald-500 border-emerald-500 text-[#111827]'
+                : 'border-[#9ca3af] hover:border-emerald-400 hover:bg-emerald-400/10'
             )}
           >
             {task.completed && <Check className="h-3 w-3" />}
@@ -153,8 +153,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 <h4 className={clsx(
                   'text-sm font-medium transition-colors',
                   task.completed
-                    ? 'text-[#888] line-through'
-                    : 'text-white group-hover:text-[#f0f0f0]'
+                    ? 'text-[#6b7280] line-through'
+                    : 'text-[#111827] group-hover:text-[#111827]'
                 )}>
                   {task.title}
                 </h4>
@@ -180,7 +180,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     <span>{energyConfig.label}</span>
                   </span>
 
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#1a1a1a] border border-[#333]/50 text-[#ccc]">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#f3f4f6] border border-[#d1d5db]/50 text-[#374151]">
                     <Clock className="h-3 w-3 mr-1" />
                     {task.estimatedHours}h予定
                   </span>
@@ -210,7 +210,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
               <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-1 rounded text-[#888] hover:text-white hover:bg-[#1a1a1a]"
+                  className="p-1 rounded text-[#6b7280] hover:text-[#111827] hover:bg-[#f3f4f6]"
                   title="詳細を表示"
                 >
                   <MoreVertical className="h-4 w-4" />
@@ -219,7 +219,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 {onEdit && (
                   <button
                     onClick={() => onEdit(task)}
-                    className="p-1 rounded text-[#888] hover:text-blue-400 hover:bg-blue-500/10"
+                    className="p-1 rounded text-[#6b7280] hover:text-blue-400 hover:bg-blue-500/10"
                     title="編集"
                   >
                     <Edit3 className="h-4 w-4" />
@@ -229,7 +229,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                 {onDelete && (
                   <button
                     onClick={() => onDelete(task.id)}
-                    className="p-1 rounded text-[#888] hover:text-red-400 hover:bg-red-500/10"
+                    className="p-1 rounded text-[#6b7280] hover:text-red-500 hover:bg-red-500/10"
                     title="削除"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -240,13 +240,13 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
             {/* Expanded Details */}
             {isExpanded && (
-              <div className="mt-4 p-3 bg-[#0d0d0d] rounded-lg border border-[#232323]">
+              <div className="mt-4 p-3 bg-[#f4f5f7] rounded-lg border border-[#e5e7eb]">
                 <div className="space-y-3">
                   {/* Notes */}
                   {task.notes && (
                     <div>
-                      <label className="text-xs font-medium text-[#888]">メモ</label>
-                      <p className="text-sm text-[#ccc] mt-1">{task.notes}</p>
+                      <label className="text-xs font-medium text-[#6b7280]">メモ</label>
+                      <p className="text-sm text-[#374151] mt-1">{task.notes}</p>
                     </div>
                   )}
 
@@ -255,8 +255,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     <div className="grid grid-cols-2 gap-4">
                       {task.scheduledDate && (
                         <div>
-                          <label className="text-xs font-medium text-[#888]">予定日</label>
-                          <p className="text-sm text-[#ccc] mt-1">
+                          <label className="text-xs font-medium text-[#6b7280]">予定日</label>
+                          <p className="text-sm text-[#374151] mt-1">
                             {new Date(task.scheduledDate).toLocaleDateString('ja-JP')}
                           </p>
                         </div>
@@ -264,8 +264,8 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
                       {task.isRecurring && task.recurringType && (
                         <div>
-                          <label className="text-xs font-medium text-[#888]">繰り返し</label>
-                          <p className="text-sm text-[#ccc] mt-1">
+                          <label className="text-xs font-medium text-[#6b7280]">繰り返し</label>
+                          <p className="text-sm text-[#374151] mt-1">
                             {task.recurringInterval || 1}
                             {task.recurringType === 'daily' && '日ごと'}
                             {task.recurringType === 'weekly' && '週間ごと'}
@@ -280,12 +280,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   {/* Time Tracking */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-medium text-[#888]">予定時間</label>
-                      <p className="text-sm text-[#ccc] mt-1">{task.estimatedHours}時間</p>
+                      <label className="text-xs font-medium text-[#6b7280]">予定時間</label>
+                      <p className="text-sm text-[#374151] mt-1">{task.estimatedHours}時間</p>
                     </div>
 
                     <div>
-                      <label className="text-xs font-medium text-[#888]">実績時間</label>
+                      <label className="text-xs font-medium text-[#6b7280]">実績時間</label>
                       <div className="mt-1">
                         {task.completed ? (
                           <input
@@ -295,10 +295,10 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                             step="0.5"
                             value={task.actualHours || task.estimatedHours}
                             onChange={(e) => handleActualHoursChange(parseFloat(e.target.value))}
-                            className="w-20 px-2 py-1 text-sm bg-[#131313] border border-[#333] rounded text-white focus:border-blue-400 focus:outline-none"
+                            className="w-20 px-2 py-1 text-sm bg-[#f9fafb] border border-[#d1d5db] rounded text-[#111827] focus:border-blue-400 focus:outline-none"
                           />
                         ) : (
-                          <span className="text-sm text-[#888]">
+                          <span className="text-sm text-[#6b7280]">
                             {task.actualHours || '-'}時間
                           </span>
                         )}
@@ -309,15 +309,15 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                   {/* Completion Date */}
                   {task.completed && task.completedDate && (
                     <div>
-                      <label className="text-xs font-medium text-[#888]">完了日時</label>
-                      <p className="text-sm text-[#ccc] mt-1">
+                      <label className="text-xs font-medium text-[#6b7280]">完了日時</label>
+                      <p className="text-sm text-[#374151] mt-1">
                         {new Date(task.completedDate).toLocaleString('ja-JP')}
                       </p>
                     </div>
                   )}
 
                   {/* Timestamps */}
-                  <div className="text-xs text-[#666] pt-2 border-t border-[#2a2a2a]">
+                  <div className="text-xs text-[#9ca3af] pt-2 border-t border-[#e5e7eb]">
                     <div>作成: {new Date(task.createdAt).toLocaleString('ja-JP')}</div>
                     {task.updatedAt !== task.createdAt && (
                       <div>更新: {new Date(task.updatedAt).toLocaleString('ja-JP')}</div>

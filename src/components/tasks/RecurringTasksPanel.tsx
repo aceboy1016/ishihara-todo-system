@@ -46,14 +46,14 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
     <div className="card p-6">
       <div className="flex items-center space-x-3 mb-6">
         <Repeat className="h-5 w-5 text-purple-400" />
-        <h3 className="text-lg font-bold text-white">繰り返しタスク一覧</h3>
-        <span className="text-sm text-[#888]">({recurringTasks.length}件)</span>
+        <h3 className="text-lg font-bold text-[#111827]">繰り返しタスク一覧</h3>
+        <span className="text-sm text-[#6b7280]">({recurringTasks.length}件)</span>
       </div>
 
       {recurringTasks.length === 0 ? (
         <div className="text-center py-12">
-          <Repeat className="h-12 w-12 text-[#555] mx-auto mb-4" />
-          <p className="text-[#888]">繰り返しタスクはありません</p>
+          <Repeat className="h-12 w-12 text-[#9ca3af] mx-auto mb-4" />
+          <p className="text-[#6b7280]">繰り返しタスクはありません</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -62,18 +62,18 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
             return (
               <div
                 key={task.id}
-                className="p-4 bg-[#1e1e1e]/30 border border-[#2e2e2e] rounded-lg hover:bg-[#1a1a1a] transition-colors"
+                className="p-4 bg-[#f3f4f6]/30 border border-[#d1d5db] rounded-lg hover:bg-[#f3f4f6] transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-2">
                       <span className="text-lg">{config.icon}</span>
-                      <h4 className="text-white font-medium">{task.title}</h4>
+                      <h4 className="text-[#111827] font-medium">{task.title}</h4>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 text-xs">
                       {/* カテゴリ */}
-                      <span className="px-2 py-1 bg-[#252525]/50 text-[#ccc] rounded">
+                      <span className="px-2 py-1 bg-[#e5e7eb]/50 text-[#374151] rounded">
                         {config.name}
                       </span>
 
@@ -89,7 +89,7 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
                       {/* 優先度 */}
                       <span className={clsx(
                         'px-2 py-1 rounded',
-                        task.priority === 'S' && 'bg-red-500/10 border border-red-500/30 text-red-400',
+                        task.priority === 'S' && 'bg-red-500/10 border border-red-500/30 text-red-500',
                         task.priority === 'A' && 'bg-orange-500/10 border border-orange-500/30 text-orange-400',
                         task.priority === 'B' && 'bg-green-500/10 border border-green-500/30 text-green-400'
                       )}>
@@ -105,14 +105,14 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
                     </div>
 
                     {task.notes && (
-                      <p className="text-xs text-[#888] mt-2">{task.notes}</p>
+                      <p className="text-xs text-[#6b7280] mt-2">{task.notes}</p>
                     )}
                   </div>
 
                   <div className="flex items-center space-x-2 ml-4">
                     <button
                       onClick={() => onTaskEdit(task)}
-                      className="p-2 hover:bg-[#252525] rounded-lg transition-colors text-[#888] hover:text-primary-cyan"
+                      className="p-2 hover:bg-[#e5e7eb] rounded-lg transition-colors text-[#6b7280] hover:text-primary-cyan"
                       title="編集"
                     >
                       <Edit2 className="h-4 w-4" />
@@ -123,7 +123,7 @@ export const RecurringTasksPanel: React.FC<RecurringTasksPanelProps> = ({
                           onTaskDelete(task.id);
                         }
                       }}
-                      className="p-2 hover:bg-[#252525] rounded-lg transition-colors text-[#888] hover:text-red-400"
+                      className="p-2 hover:bg-[#e5e7eb] rounded-lg transition-colors text-[#6b7280] hover:text-red-500"
                       title="削除"
                     >
                       <Trash2 className="h-4 w-4" />
