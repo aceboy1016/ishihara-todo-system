@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Settings2 } from 'lucide-react';
 import { Header } from './Header';
-import { TimePeriodSidebar, type TimePeriodFilter } from './TimePeriodSidebar';
+import { type TimePeriodFilter } from './TimePeriodSidebar';
 import { ProgressCard } from '../analytics/ProgressCard';
 import { AnalyticsCard } from '../analytics/AnalyticsCard';
 import { TaskCategory } from '../tasks/TaskCategory';
@@ -619,6 +619,47 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         onWeekChange={handleWeekChange}
       />
 
+      {/* Sticky filter bar — visible at all times in dashboard view */}
+      {currentView === 'dashboard' && (
+        <div className="sticky top-16 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center gap-3 flex-wrap">
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide shrink-0">期間</span>
+            {([
+              { key: 'all' as const, label: '全て', count: taskCountsByPeriod.all },
+              { key: 'today' as const, label: '今日', count: taskCountsByPeriod.today },
+              { key: 'week' as const, label: '今週', count: taskCountsByPeriod.week },
+              { key: 'month' as const, label: '今月', count: taskCountsByPeriod.month },
+            ]).map(({ key, label, count }) => (
+              <button
+                key={key}
+                onClick={() => setTimePeriodFilter(key)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  timePeriodFilter === key
+                    ? 'bg-primary-cyan text-slate-900'
+                    : 'bg-slate-700/60 text-slate-300 hover:bg-slate-700 hover:text-white'
+                }`}
+              >
+                {label}
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  timePeriodFilter === key ? 'bg-slate-900/30 text-slate-900' : 'bg-slate-600 text-slate-400'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            ))}
+            <div className="ml-auto">
+              <button
+                onClick={() => setShowCategoryManager(true)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/60 hover:bg-slate-700 border border-slate-600/60 rounded-full text-sm text-slate-300 hover:text-white transition-colors"
+              >
+                <Settings2 className="h-3.5 w-3.5" />
+                カテゴリー管理
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
         {currentView === 'dashboard' && (
           <div className="space-y-8">
@@ -730,49 +771,40 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
             {/* Task Categories */}
             <section className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
                 <h2 className="text-2xl font-bold text-white">タスク管理</h2>
-                <button
-                  onClick={() => setShowCategoryManager(true)}
-                  className="flex items-center gap-2 px-3 py-2 bg-slate-700/60 hover:bg-slate-700 border border-slate-600/60 rounded-lg text-sm text-slate-300 hover:text-white transition-colors"
-                >
-                  <Settings2 className="h-4 w-4" />
-                  カテゴリー管理
-                </button>
+                {timePeriodFilter !== 'all' && (
+                  <span className="px-2.5 py-1 bg-primary-cyan/20 text-primary-cyan text-sm rounded-full border border-primary-cyan/30">
+                    {{ today: '今日', week: '今週', month: '今月' }[timePeriodFilter]}フィルター中
+                  </span>
+                )}
               </div>
-              <div className="flex gap-6 items-start">
-                <TimePeriodSidebar
-                  filter={timePeriodFilter}
-                  onChange={setTimePeriodFilter}
-                  taskCounts={taskCountsByPeriod}
-                />
-                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
-                  {allCategories.map(cat => {
-                    const filteredTasks = getFilteredTasksByCategory(cat.id);
-                    if (timePeriodFilter !== 'all' && filteredTasks.length === 0) return null;
-                    return (
-                      <TaskCategory
-                        key={cat.id}
-                        category={cat.id}
-                        categoryName={cat.name}
-                        customIcon={'icon' in cat ? cat.icon : undefined}
-                        customColor={'color' in cat ? cat.color : undefined}
-                        tasks={filteredTasks}
-                        onTaskToggle={handleTaskToggle}
-                        onTaskUpdate={handleTaskUpdate}
-                        onTaskAdd={(category) => {
-                          setDefaultCategory(category);
-                          setIsTaskModalOpen(true);
-                        }}
-                        onTaskEdit={handleEditTask}
-                        onTaskDelete={handleDeleteTask}
-                        onTaskMove={handleTaskMove}
-                        progress={calculateCategoryProgress(cat.id)}
-                        currentWeek={currentWeek}
-                      />
-                    );
-                  })}
-                </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {allCategories.map(cat => {
+                  const filteredTasks = getFilteredTasksByCategory(cat.id);
+                  if (timePeriodFilter !== 'all' && filteredTasks.length === 0) return null;
+                  return (
+                    <TaskCategory
+                      key={cat.id}
+                      category={cat.id}
+                      categoryName={cat.name}
+                      customIcon={'icon' in cat ? cat.icon : undefined}
+                      customColor={'color' in cat ? cat.color : undefined}
+                      tasks={filteredTasks}
+                      onTaskToggle={handleTaskToggle}
+                      onTaskUpdate={handleTaskUpdate}
+                      onTaskAdd={(category) => {
+                        setDefaultCategory(category);
+                        setIsTaskModalOpen(true);
+                      }}
+                      onTaskEdit={handleEditTask}
+                      onTaskDelete={handleDeleteTask}
+                      onTaskMove={handleTaskMove}
+                      progress={calculateCategoryProgress(cat.id)}
+                      currentWeek={currentWeek}
+                    />
+                  );
+                })}
               </div>
             </section>
 
