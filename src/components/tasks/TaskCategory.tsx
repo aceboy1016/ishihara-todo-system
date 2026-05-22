@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, memo } from 'react';
 import { Plus, ChevronDown, ChevronRight } from 'lucide-react';
 import { useDrop } from 'react-dnd';
 import { TaskItem } from './TaskItem';
@@ -111,7 +111,7 @@ const DEFAULT_CUSTOM_CONFIG = {
   accent: 'text-slate-400',
 };
 
-export const TaskCategory: React.FC<TaskCategoryProps> = ({
+export const TaskCategory = memo<TaskCategoryProps>(({
   category,
   categoryName,
   customIcon,
@@ -416,4 +416,6 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
       )}
     </div>
   );
-};
+});
+
+TaskCategory.displayName = 'TaskCategory';
