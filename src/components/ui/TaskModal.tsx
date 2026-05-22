@@ -2,15 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import type { TaskFormData, Task } from '../../types';
+import type { CustomCategory } from '../../hooks/useCustomCategories';
+
+const DEFAULT_CATEGORIES: { value: string; label: string }[] = [
+  { value: 'note', label: '📝 note' },
+  { value: 'standfm', label: '🎙️ standFM' },
+  { value: 'instagram', label: '📷 Instagram' },
+  { value: 'youtube', label: '📺 YouTube' },
+  { value: 'expertise', label: '🎯 専門性開発' },
+  { value: 'marketing', label: '📈 マーケティング' },
+  { value: 'business', label: '💼 ビジネス' },
+  { value: 'topform', label: '🏢 TOPFORM' },
+  { value: 'private', label: '🏠 プライベート' },
+  { value: 'other', label: '📌 その他' },
+  { value: 'reading', label: '📚 読書' },
+];
 
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (taskData: TaskFormData) => void;
   title: string;
-  editingTask?: Task; // 編集するタスク（新規作成時はundefined）
-  defaultCategory?: Task['category']; // 事前選択するカテゴリー
+  editingTask?: Task;
+  defaultCategory?: string;
   defaultTaskData?: Partial<TaskFormData>;
+  customCategories?: CustomCategory[];
 }
 
 export const TaskModal: React.FC<TaskModalProps> = ({
@@ -20,11 +36,16 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   title,
   editingTask,
   defaultCategory,
-  defaultTaskData
+  defaultTaskData,
+  customCategories = [],
 }) => {
+  const allCategories = [
+    ...DEFAULT_CATEGORIES,
+    ...customCategories.map(c => ({ value: c.id, label: `${c.icon} ${c.name}` })),
+  ];
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
-    category: 'note',
+    category: defaultCategory ?? 'note',
     priority: 'B',
     energy: 'medium',
     estimatedHours: 1,
@@ -55,7 +76,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       const category = defaultCategory || 'note';
       const newFormData: TaskFormData = {
         title: '',
-        category,
+        category: category,
         priority: 'B' as const,
         energy: 'medium' as const,
         estimatedHours: 1,
@@ -135,20 +156,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </label>
             <select
               value={formData.category}
-              onChange={(e) => handleInputChange('category', e.target.value as TaskFormData['category'])}
+              onChange={(e) => handleInputChange('category', e.target.value)}
               className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
             >
-              <option value="note">📝 note</option>
-              <option value="standfm">🎙️ standFM</option>
-              <option value="instagram">📷 Instagram</option>
-              <option value="youtube">📺 YouTube</option>
-              <option value="expertise">🎯 専門性開発</option>
-              <option value="marketing">📈 マーケティング</option>
-              <option value="business">💼 ビジネス</option>
-              <option value="topform">🏢 TOPFORM</option>
-              <option value="private">🏠 プライベート</option>
-              <option value="other">📌 その他</option>
-              <option value="reading">📚 読書</option>
+              {allCategories.map(cat => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
             </select>
           </div>
 

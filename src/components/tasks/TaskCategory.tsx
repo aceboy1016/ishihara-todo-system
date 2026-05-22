@@ -8,12 +8,14 @@ import { getWeekDates } from '../../utils/dateUtils';
 import clsx from 'clsx';
 
 interface TaskCategoryProps {
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other' | 'reading';
+  category: string;
   categoryName: string;
+  customIcon?: string;
+  customColor?: string; // reserved for future inline style usage
   tasks: Task[];
   onTaskToggle: (taskId: number) => void;
   onTaskUpdate: (taskId: number, updates: Partial<Task>) => void;
-  onTaskAdd?: (category?: Task['category']) => void;
+  onTaskAdd?: (category?: string) => void;
   onTaskMove?: (taskId: number, newCategory: string) => void;
   onTaskEdit?: (task: Task) => void;
   onTaskDelete?: (taskId: number) => void;
@@ -101,9 +103,19 @@ const categoryConfig = {
   }
 };
 
+const DEFAULT_CUSTOM_CONFIG = {
+  icon: '📌',
+  color: 'slate',
+  gradient: 'from-slate-500/20 to-gray-600/20',
+  border: 'border-slate-500/30',
+  accent: 'text-slate-400',
+};
+
 export const TaskCategory: React.FC<TaskCategoryProps> = ({
   category,
   categoryName,
+  customIcon,
+  customColor: _customColor,
   tasks,
   onTaskToggle,
   onTaskUpdate,
@@ -115,7 +127,11 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
   currentWeek = 40
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const config = categoryConfig[category];
+  const baseConfig = (categoryConfig as Record<string, typeof DEFAULT_CUSTOM_CONFIG>)[category] ?? DEFAULT_CUSTOM_CONFIG;
+  const config = {
+    ...baseConfig,
+    icon: customIcon ?? baseConfig.icon,
+  };
 
   const categoryRef = useRef<HTMLDivElement | null>(null);
   const [{ isOver }, drop] = useDrop({
