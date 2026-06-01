@@ -82,12 +82,12 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
           'text-xs px-1 py-0.5 rounded border cursor-move transition-all',
           isDragging && 'opacity-50',
           task.completed
-            ? 'bg-green-400/20 border-green-400/40 text-green-300 line-through'
+            ? 'bg-green-50 border-green-300 text-green-700 line-through'
             : task.priority === 'S'
-              ? 'bg-red-400/20 border-red-400/40 text-red-300'
+              ? 'bg-red-50 border-red-300 text-red-700'
               : task.priority === 'A'
-                ? 'bg-orange-400/20 border-orange-400/40 text-orange-300'
-                : 'bg-blue-400/20 border-blue-400/40 text-blue-300'
+                ? 'bg-orange-50 border-orange-300 text-orange-700'
+                : 'bg-blue-50 border-blue-300 text-blue-700'
         )}
         title={task.title}
         onClick={(e) => {

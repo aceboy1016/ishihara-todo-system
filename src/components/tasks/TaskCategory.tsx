@@ -24,91 +24,23 @@ interface TaskCategoryProps {
 }
 
 const categoryConfig = {
-  note: {
-    icon: '📝',
-    color: 'teal',
-    gradient: 'from-teal-500/20 to-cyan-600/20',
-    border: 'border-teal-500/30',
-    accent: 'text-teal-400'
-  },
-  standfm: {
-    icon: '🎙️',
-    color: 'orange',
-    gradient: 'from-orange-500/20 to-red-600/20',
-    border: 'border-orange-500/30',
-    accent: 'text-orange-400'
-  },
-  instagram: {
-    icon: '📷',
-    color: 'pink',
-    gradient: 'from-pink-500/20 to-rose-600/20',
-    border: 'border-pink-500/30',
-    accent: 'text-pink-400'
-  },
-  youtube: {
-    icon: '📺',
-    color: 'red',
-    gradient: 'from-red-500/20 to-rose-600/20',
-    border: 'border-red-500/30',
-    accent: 'text-red-500'
-  },
-  expertise: {
-    icon: '🎯',
-    color: 'teal',
-    gradient: 'from-teal-500/20 to-cyan-600/20',
-    border: 'border-teal-500/30',
-    accent: 'text-teal-400'
-  },
-  marketing: {
-    icon: '📈',
-    color: 'blue',
-    gradient: 'from-blue-500/20 to-indigo-600/20',
-    border: 'border-blue-500/30',
-    accent: 'text-blue-400'
-  },
-  business: {
-    icon: '💼',
-    color: 'yellow',
-    gradient: 'from-yellow-500/20 to-orange-600/20',
-    border: 'border-yellow-500/30',
-    accent: 'text-yellow-400'
-  },
-  topform: {
-    icon: '🏢',
-    color: 'red',
-    gradient: 'from-red-500/20 to-rose-600/20',
-    border: 'border-red-500/30',
-    accent: 'text-red-500'
-  },
-  private: {
-    icon: '🏠',
-    color: 'purple',
-    gradient: 'from-purple-500/20 to-violet-600/20',
-    border: 'border-purple-500/30',
-    accent: 'text-purple-400'
-  },
-  other: {
-    icon: '📌',
-    color: 'gray',
-    gradient: 'from-gray-500/20 to-slate-600/20',
-    border: 'border-gray-500/30',
-    accent: 'text-gray-400'
-  },
-  reading: {
-    icon: '📚',
-    color: 'purple',
-    gradient: 'from-purple-500/20 to-violet-600/20',
-    border: 'border-purple-500/30',
-    accent: 'text-purple-400'
-  }
+  note:      { icon: '📝', accent: 'text-teal-700',   accentColor: '#0d9488' },
+  standfm:   { icon: '🎙️', accent: 'text-orange-700', accentColor: '#ea580c' },
+  instagram: { icon: '📷', accent: 'text-pink-700',   accentColor: '#be185d' },
+  youtube:   { icon: '📺', accent: 'text-red-700',    accentColor: '#dc2626' },
+  expertise: { icon: '🎯', accent: 'text-teal-700',   accentColor: '#0d9488' },
+  marketing: { icon: '📈', accent: 'text-blue-700',   accentColor: '#1d4ed8' },
+  business:  { icon: '💼', accent: 'text-amber-700',  accentColor: '#b45309' },
+  topform:   { icon: '🏢', accent: 'text-red-700',    accentColor: '#dc2626' },
+  private:   { icon: '🏠', accent: 'text-purple-700', accentColor: '#7c3aed' },
+  other:     { icon: '📌', accent: 'text-gray-600',   accentColor: '#6b7280' },
+  reading:   { icon: '📚', accent: 'text-purple-700', accentColor: '#7c3aed' },
 };
 
 const DEFAULT_CUSTOM_CONFIG = {
   icon: '📌',
-  color: 'slate',
-  gradient: 'from-slate-500/20 to-gray-600/20',
-  border: 'border-[#9ca3af]/30',
-  accent: 'text-[#6b7280]',
+  accent: 'text-[#374151]',
+  accentColor: '#6b7280',
 };
 
 export const TaskCategory = memo<TaskCategoryProps>(({
@@ -181,12 +113,11 @@ export const TaskCategory = memo<TaskCategoryProps>(({
     <div
       ref={categoryRef}
       className={clsx(
-        'card',
-        'bg-gradient-to-br', config.gradient,
-        'border', config.border,
+        'card bg-white border-[#e5e7eb]',
         'transition-all duration-200',
         isOver && 'ring-2 ring-primary-cyan ring-opacity-50 scale-102'
-      )}>
+      )}
+      style={{ borderLeftWidth: '4px', borderLeftColor: config.accentColor }}>
       {/* Header */}
       <div className="p-4 border-b border-[#e5e7eb]">
         <div className="flex items-center justify-between">
@@ -255,9 +186,8 @@ export const TaskCategory = memo<TaskCategoryProps>(({
               <button
                 onClick={() => onTaskAdd(category)}
                 className={clsx(
-                  'p-2 rounded-lg border transition-colors',
-                  'hover:bg-white opacity-10',
-                  config.border,
+                  'p-2 rounded-lg border border-[#e5e7eb] transition-colors',
+                  'hover:bg-[#f3f4f6]',
                   'text-[#374151] hover:text-[#111827]'
                 )}
                 title="タスクを追加"

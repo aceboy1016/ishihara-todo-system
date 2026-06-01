@@ -439,10 +439,10 @@ export function formatDayOfWeek(date: Date): string {
  */
 export function getPriorityColor(priority: Task['priority']): string {
   switch (priority) {
-    case 'S': return 'bg-red-500/20 border-red-500/40 text-red-300';
-    case 'A': return 'bg-orange-500/20 border-orange-500/40 text-orange-300';
-    case 'B': return 'bg-green-500/20 border-green-500/40 text-green-300';
-    default: return 'bg-gray-500/20 border-gray-500/40 text-gray-300';
+    case 'S': return 'bg-red-50 border-red-300 text-red-700';
+    case 'A': return 'bg-orange-50 border-orange-300 text-orange-700';
+    case 'B': return 'bg-green-50 border-green-300 text-green-700';
+    default: return 'bg-gray-50 border-gray-300 text-gray-700';
   }
 }
 

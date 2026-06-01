@@ -43,14 +43,14 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         return {
           bg: 'bg-orange-500/10',
           border: 'border-orange-500/30',
-          text: 'text-orange-400',
+          text: 'text-orange-700',
           label: '重要'
         };
       case 'B':
         return {
           bg: 'bg-green-500/10',
           border: 'border-green-500/30',
-          text: 'text-green-400',
+          text: 'text-green-700',
           label: '通常'
         };
       default:
@@ -69,7 +69,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         return {
           bg: 'bg-emerald-500/10',
           border: 'border-emerald-500/30',
-          text: 'text-emerald-400',
+          text: 'text-emerald-700',
           icon: <Zap className="h-3 w-3" />,
           label: '高エネルギー'
         };
@@ -77,7 +77,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         return {
           bg: 'bg-yellow-500/10',
           border: 'border-yellow-500/30',
-          text: 'text-yellow-400',
+          text: 'text-amber-700',
           icon: <Clock className="h-3 w-3" />,
           label: '中エネルギー'
         };
@@ -85,7 +85,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
         return {
           bg: 'bg-blue-500/10',
           border: 'border-blue-500/30',
-          text: 'text-blue-400',
+          text: 'text-blue-700',
           icon: <Clock className="h-3 w-3" />,
           label: '低エネルギー'
         };
@@ -187,7 +187,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
                   {/* 予定日バッジ */}
                   {task.scheduledDate && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/10 border border-blue-500/30 text-blue-400">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/10 border border-blue-500/30 text-blue-700">
                       <Calendar className="h-3 w-3 mr-1" />
                       {new Date(task.scheduledDate).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })}
                     </span>
@@ -195,7 +195,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 
                   {/* 繰り返しバッジ */}
                   {task.isRecurring && task.recurringType && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-500/10 border border-purple-500/30 text-purple-400">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-500/10 border border-purple-500/30 text-purple-700">
                       <Repeat className="h-3 w-3 mr-1" />
                       {task.recurringType === 'daily' && '毎日'}
                       {task.recurringType === 'weekly' && '毎週'}
@@ -333,7 +333,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
       {/* Completion Animation */}
       {task.completed && (
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-2 right-2 text-emerald-400 opacity-80 animate-pulse">
+          <div className="absolute top-2 right-2 text-emerald-600 opacity-80 animate-pulse">
             <Check className="h-4 w-4" />
           </div>
         </div>
