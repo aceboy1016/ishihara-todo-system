@@ -5,7 +5,7 @@ import {
   getScheduledTasksForWeek,
   generateDateRange,
   formatDayOfWeek,
-  getPriorityColor,
+
   getEnergyIcon,
   shortenTaskTitle,
   type ScheduledTask
@@ -160,54 +160,59 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {dayTasks.map(task => (
+                    {dayTasks.map(task => {
+                      const priorityStyle =
+                        task.priority === 'S' ? { bg: 'bg-red-50 border-red-200', dot: 'bg-red-500', badge: 'bg-red-100 text-red-700' } :
+                        task.priority === 'A' ? { bg: 'bg-orange-50 border-orange-200', dot: 'bg-orange-500', badge: 'bg-orange-100 text-orange-700' } :
+                        { bg: 'bg-green-50 border-green-200', dot: 'bg-green-500', badge: 'bg-green-100 text-green-700' };
+                      return (
                       <div
                         key={task.id}
                         className={clsx(
                           'flex items-center space-x-3 p-3 rounded-lg border transition-all cursor-pointer group',
-                          getPriorityColor(task.priority),
+                          priorityStyle.bg,
                           task.completed && 'opacity-60',
-                          !task.completed && 'hover:scale-[1.02] hover:shadow-lg'
+                          !task.completed && 'hover:shadow-md'
                         )}
                         onClick={() => onTaskToggle(task.id)}
                       >
-                        {/* チェックボックス - より目立つように */}
+                        {/* チェックボックス */}
                         <div className="flex-shrink-0 transition-transform group-hover:scale-110">
                           {task.completed ? (
-                            <CheckCircle className="h-6 w-6 text-green-400 drop-shadow-lg" />
+                            <CheckCircle className="h-5 w-5 text-green-500" />
                           ) : (
-                            <div className="h-6 w-6 border-2 border-current rounded-full group-hover:border-4 transition-all"></div>
+                            <div className={clsx('h-5 w-5 rounded-full border-2', priorityStyle.dot.replace('bg-', 'border-'))}></div>
                           )}
                         </div>
 
                         {/* タスク情報 */}
                         <div className="flex-1 min-w-0">
                           <div className={clsx(
-                            'font-medium text-sm',
-                            task.completed && 'line-through'
+                            'font-semibold text-sm text-[#111827]',
+                            task.completed && 'line-through text-[#9ca3af]'
                           )}>
                             {shortenTaskTitle(task.title)}
                           </div>
-                          <div className="flex items-center space-x-2 text-xs opacity-80 mt-1">
+                          <div className="flex items-center space-x-2 text-xs text-[#6b7280] mt-0.5">
                             <span className="flex items-center space-x-1">
                               <Clock className="h-3 w-3" />
                               <span>{task.estimatedHours}h</span>
                             </span>
                             <span>{getEnergyIcon(task.energy)}</span>
-                            <span className="px-2 py-0.5 bg-current/20 rounded-full">
+                            <span className={clsx('px-1.5 py-0.5 rounded-full font-medium', priorityStyle.badge)}>
                               {task.priority}
                             </span>
                           </div>
                         </div>
 
-                        {/* 完了状態の表示 */}
                         {task.completed && (
-                          <div className="flex-shrink-0 text-xs text-green-400 font-medium">
+                          <div className="flex-shrink-0 text-xs text-green-600 font-medium">
                             完了
                           </div>
                         )}
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
 
