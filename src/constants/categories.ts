@@ -151,6 +151,19 @@ export const DEFAULT_CATEGORIES: Record<string, Category> = {
       unit: '冊/月'
     },
     editable: true
+  },
+  oshida: {
+    id: 'oshida',
+    name: '扇田さん関連',
+    color: '#f97316',
+    icon: '🌟',
+    goal: {
+      type: 'text',
+      target: 'セミナー・撮影サポート',
+      current: '進行中',
+      unit: ''
+    },
+    editable: true
   }
 };
 
@@ -1124,6 +1137,64 @@ export function generateInitialTasks() {
     isRecurring: true,
     recurringType: 'monthly' as const,
     recurringInterval: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  // 扇田さん関連タスク
+  {
+    id: 56,
+    category: 'oshida' as const,
+    title: 'ヒップアップセミナーの研修（自分が行うもの）',
+    priority: 'A' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 2,
+    notes: '(a) それに対しての構想をちゃんと練る\n10:00-12:00',
+    scheduledDate: '2026-06-16',
+    isRecurring: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 57,
+    category: 'oshida' as const,
+    title: 'ヒップアップセミナーの構想を練る',
+    priority: 'A' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 1,
+    notes: '6/16の研修本番に向けた準備',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 58,
+    category: 'oshida' as const,
+    title: '扇田さんの撮影',
+    priority: 'A' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 2,
+    notes: '(a) 特に準備はないが、トレーニング種目で何を提案したのかを確認しておく\n10:00-12:00',
+    scheduledDate: '2026-06-30',
+    isRecurring: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 59,
+    category: 'oshida' as const,
+    title: '提案したトレーニング種目の確認',
+    priority: 'B' as const,
+    energy: 'low' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 0.5,
+    notes: '6/30撮影前に確認。過去に提案した種目をリストアップしておく',
+    scheduledDate: '2026-06-28',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },

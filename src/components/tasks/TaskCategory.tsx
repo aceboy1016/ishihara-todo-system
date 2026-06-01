@@ -35,6 +35,7 @@ const categoryConfig = {
   private:   { icon: '🏠', accent: 'text-purple-700', accentColor: '#7c3aed' },
   other:     { icon: '📌', accent: 'text-gray-600',   accentColor: '#6b7280' },
   reading:   { icon: '📚', accent: 'text-purple-700', accentColor: '#7c3aed' },
+  oshida:    { icon: '🌟', accent: 'text-orange-700', accentColor: '#f97316' },
 };
 
 const DEFAULT_CUSTOM_CONFIG = {

@@ -52,6 +52,7 @@ const DEFAULT_CATEGORY_LIST = [
   { id: 'private', name: 'プライベート', icon: '🏠', color: '#9b59b6' },
   { id: 'other', name: 'その他', icon: '📌', color: '#7f8c8d' },
   { id: 'reading', name: '読書', icon: '📚', color: '#6c5ce7' },
+  { id: 'oshida', name: '扇田さん関連', icon: '🌟', color: '#f97316' },
 ] as const;
 
 interface DashboardProps {
